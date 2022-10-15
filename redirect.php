@@ -15,11 +15,13 @@ require_once 'google-api-php-client/vendor/autoload.php';
 //Make object of Google API Client for call Google API
 $google_client = new Google_Client();
 
+include 'google-api-key.php';
+
 //Set the OAuth 2.0 Client ID
-$google_client->setClientId('747586991336-26hibf62omjmbbgu48nnmsog8raqgf00.apps.googleusercontent.com');
+//$google_client->setClientId('');
 
 //Set the OAuth 2.0 Client Secret key
-$google_client->setClientSecret('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');
+//$google_client->setClientSecret('');
 
 //Set the OAuth 2.0 Redirect URI
 $google_client->setRedirectUri('http://localhost/gammify/redirect.php');
