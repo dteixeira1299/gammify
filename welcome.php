@@ -31,6 +31,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
             <img src="<?= $_SESSION["user_image"] ?>" class="img-responsive img-circle img-thumbnail" />
             <h3><b>Name:</b><br><?= $_SESSION['user_first_name'] . ' ' . $_SESSION['user_last_name'] ?></h3>
             <h3><b>Email:</b><br><?= $_SESSION['user_email_address'] ?></h3>
+            <h3><b>Username:</b><br><?=$_SESSION['user_name']?></h3>
             </div>
         <?php else : ?>
             <div style="border: 1px solid white;width:500px;margin-left:auto;margin-right:auto;margin-top:100px;padding:10px;">

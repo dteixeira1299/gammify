@@ -61,6 +61,7 @@ if (isset($_GET["code"])) {
 
         if (!empty($data['email'])) {
             $_SESSION['user_email_address'] = $data['email'];
+            $_SESSION['user_name'] = explode("@",$data['email'])[0];
         }
 
         if (!empty($data['gender'])) {
@@ -78,8 +79,94 @@ if (!isset($_SESSION['access_token'])) {
     //Redirect user to obtain authorization
     header("location: " . $google_client->createAuthUrl());
 } else {
-    // Store data in session variables
-    $_SESSION["loggedin"] = true;
-    // Redirect user to welcome page
-    header("location: welcome.php");
+
+    
+
+
+
+
+
+
+
+
+}
+
+
+
+
+create_user(){
+    $username = $_SESSION['user_name'];
+
+    // Prepare an insert statement
+    $sql = "INSERT INTO users (username, password) VALUES (?, ?)";
+         
+    if($stmt = mysqli_prepare($db_connect, $sql)){
+        // Bind variables to the prepared statement as parameters
+        mysqli_stmt_bind_param($stmt, "ss", $param_username, $param_password);
+        
+        // Set parameters
+        $param_username = $username;
+        $param_password = password_hash("google", PASSWORD_DEFAULT); // Creates a password hash
+        
+        // Attempt to execute the prepared statement
+        if(mysqli_stmt_execute($stmt)){
+
+            // The users directory path
+            $dir = "users";
+            
+            // Check the existence of users directory
+            if(!file_exists($dir)){
+                // Create users directory
+                mkdir($dir);
+                // create user directory
+                mkdir($dir . '/' . $username);
+            } else{
+                // If users directory exists, create user directory only
+                if(!file_exists($dir . '/' . $username)){
+                    mkdir($dir . '/' . $username);
+                }
+            }
+            
+            // Store data in session variables
+            $_SESSION["loggedin"] = true;
+            // Redirect user to welcome page
+            header("location: welcome.php");
+            
+        } else{
+            echo "Oops! Something went wrong. Please try again later.";
+        }
+
+        // Close statement
+        mysqli_stmt_close($stmt);
+    }
+}
+
+get_user(){
+// Prepare a select statement
+$sql = "SELECT id FROM users WHERE username = ?";
+        
+if($stmt = mysqli_prepare($db_connect, $sql)){
+    // Bind variables to the prepared statement as parameters
+    mysqli_stmt_bind_param($stmt, "s", $param_username);
+    
+    // Set parameters
+    $param_username = $_SESSION['user_name'];
+    
+    // Attempt to execute the prepared statement
+    if(mysqli_stmt_execute($stmt)){
+        /* store result */
+        mysqli_stmt_store_result($stmt);
+        
+        if(mysqli_stmt_num_rows($stmt) == 1){
+            echo "This username is already taken.";
+        } else{
+            $username = trim($_POST["username"]);
+        }
+    } else{
+        echo "Oops! Something went wrong. Please try again later.";
+    }
+
+    // Close statement
+    mysqli_stmt_close($stmt);
+}
 }
