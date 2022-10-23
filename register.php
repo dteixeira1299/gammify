@@ -23,6 +23,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $username_err = "Please enter a username.";
     } elseif(!preg_match('/^[a-zA-Z0-9_]+$/', trim($_POST["username"]))){
         $username_err = "Username can only contain letters, numbers, and underscores.";
+    } elseif((substr(trim($_POST["username"]),-3) == "_go")){
+        $username_err = 'Not allowed: "_go".';
     } else{
         // Prepare a select statement
         $sql = "SELECT id FROM users WHERE username = ?";

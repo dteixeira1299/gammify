@@ -3,8 +3,11 @@
 //start session on web page
 session_start();
 
+// Include config file
+require_once "config.php";
+
 // Check if the user is already logged in, if yes then redirect him to welcome page
-if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
+if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
     header("location: welcome.php");
     exit;
 }
@@ -52,24 +55,24 @@ if (isset($_GET["code"])) {
 
         //Below you can find Get profile data and store into $_SESSION variable
         if (!empty($data['given_name'])) {
-            $_SESSION['user_first_name'] = $data['given_name'];
+            $_SESSION['user_first_name_google'] = $data['given_name'];
         }
 
         if (!empty($data['family_name'])) {
-            $_SESSION['user_last_name'] = $data['family_name'];
+            $_SESSION['user_last_name_google'] = $data['family_name'];
         }
 
         if (!empty($data['email'])) {
-            $_SESSION['user_email_address'] = $data['email'];
-            $_SESSION['user_name'] = explode("@",$data['email'])[0];
+            $_SESSION['user_email_address_google'] = $data['email'];
+            $_SESSION['user_name_google'] = explode("@", $data['email'])[0] . '_go';
         }
 
         if (!empty($data['gender'])) {
-            $_SESSION['user_gender'] = $data['gender'];
+            $_SESSION['user_gender_google'] = $data['gender'];
         }
 
         if (!empty($data['picture'])) {
-            $_SESSION['user_image'] = $data['picture'];
+            $_SESSION['user_image_google'] = $data['picture'];
         }
     }
 }
@@ -79,94 +82,111 @@ if (!isset($_SESSION['access_token'])) {
     //Redirect user to obtain authorization
     header("location: " . $google_client->createAuthUrl());
 } else {
+    // Prepare a select statement
+    $sql = "SELECT id, username, password, by_google FROM users WHERE username = ? AND by_google = 1";
 
-    
-
-
-
-
-
-
-
-
-}
-
-
-
-
-create_user(){
-    $username = $_SESSION['user_name'];
-
-    // Prepare an insert statement
-    $sql = "INSERT INTO users (username, password) VALUES (?, ?)";
-         
-    if($stmt = mysqli_prepare($db_connect, $sql)){
+    if ($stmt = mysqli_prepare($db_connect, $sql)) {
         // Bind variables to the prepared statement as parameters
-        mysqli_stmt_bind_param($stmt, "ss", $param_username, $param_password);
-        
-        // Set parameters
-        $param_username = $username;
-        $param_password = password_hash("google", PASSWORD_DEFAULT); // Creates a password hash
-        
-        // Attempt to execute the prepared statement
-        if(mysqli_stmt_execute($stmt)){
+        mysqli_stmt_bind_param($stmt, "s", $param_username);
 
-            // The users directory path
-            $dir = "users";
-            
-            // Check the existence of users directory
-            if(!file_exists($dir)){
-                // Create users directory
-                mkdir($dir);
-                // create user directory
-                mkdir($dir . '/' . $username);
-            } else{
-                // If users directory exists, create user directory only
-                if(!file_exists($dir . '/' . $username)){
-                    mkdir($dir . '/' . $username);
+        // Set parameters
+        $param_username = $_SESSION['user_name_google'];
+
+        // Attempt to execute the prepared statement
+        if (mysqli_stmt_execute($stmt)) {
+            // Store result
+            mysqli_stmt_store_result($stmt);
+
+            // Check if username exists, if yes then verify password
+            if (mysqli_stmt_num_rows($stmt) == 1) {
+                // Bind result variables
+                mysqli_stmt_bind_result($stmt, $id, $username, $hashed_password, $by_google);
+                if (mysqli_stmt_fetch($stmt)) {
+                    if (password_verify("QIGqj,}5OOIg\[l/?9{j}77xCI{b5(*%`5n[]T,]<K?{,4s8pX%u](3E~P}<465O", $hashed_password)) {
+                        // Password is correct, so start a new session                        
+                        // Store data in session variables
+                        $_SESSION["loggedin"] = true;
+                        $_SESSION["id"] = $id;
+                        $_SESSION["username"] = $_SESSION['user_name_google'];
+                        $_SESSION["by_google"] = $by_google;
+
+                        // The users directory path
+                        $dir = "users";
+
+                        // Check the existence of users directory
+                        if (!file_exists($dir)) {
+                            // Create users directory
+                            mkdir($dir);
+                            // create user directory
+                            mkdir($dir . '/' . $_SESSION['user_name_google']);
+                        } else {
+                            // If users directory exists, create user directory only
+                            if (!file_exists($dir . '/' . $_SESSION['user_name_google'])) {
+                                mkdir($dir . '/' . $_SESSION['user_name_google']);
+                            }
+                        }
+
+                        // Redirect user to welcome page
+                        header("location: welcome.php");
+                    } else {
+                        // Password is not valid, display a generic error message
+                        echo "Invalid username or password.";
+                    }
                 }
+            } else {
+                // =====================================================================================================================================================
+                // Username doesn't exist
+                // Create account
+
+                // Prepare an insert statement
+                $sql = "INSERT INTO users (username, password, by_google) VALUES (?, ?, 1)";
+
+                if ($stmt = mysqli_prepare($db_connect, $sql)) {
+                    // Bind variables to the prepared statement as parameters
+                    mysqli_stmt_bind_param($stmt, "ss", $param_username, $param_password);
+
+                    // Set parameters
+                    $param_username = $_SESSION['user_name_google'];
+                    $param_password = password_hash("QIGqj,}5OOIg\[l/?9{j}77xCI{b5(*%`5n[]T,]<K?{,4s8pX%u](3E~P}<465O", PASSWORD_DEFAULT); // Creates a password hash
+
+                    // Attempt to execute the prepared statement
+                    if (mysqli_stmt_execute($stmt)) {
+
+                        // The users directory path
+                        $dir = "users";
+
+                        // Check the existence of users directory
+                        if (!file_exists($dir)) {
+                            // Create users directory
+                            mkdir($dir);
+                            // create user directory
+                            mkdir($dir . '/' . $_SESSION['user_name_google']);
+                        } else {
+                            // If users directory exists, create user directory only
+                            if (!file_exists($dir . '/' . $_SESSION['user_name_google'])) {
+                                mkdir($dir . '/' . $_SESSION['user_name_google']);
+                            }
+                        }
+
+                        //
+                        header("Location:redirect.php");
+                    } else {
+                        echo "Oops! Something went wrong. Please try again later.";
+                    }
+
+                    // Close statement
+                    mysqli_stmt_close($stmt);
+                }
+
+
+                // =======================================================================================================================================================
+
             }
-            
-            // Store data in session variables
-            $_SESSION["loggedin"] = true;
-            // Redirect user to welcome page
-            header("location: welcome.php");
-            
-        } else{
+        } else {
             echo "Oops! Something went wrong. Please try again later.";
         }
 
         // Close statement
         mysqli_stmt_close($stmt);
     }
-}
-
-get_user(){
-// Prepare a select statement
-$sql = "SELECT id FROM users WHERE username = ?";
-        
-if($stmt = mysqli_prepare($db_connect, $sql)){
-    // Bind variables to the prepared statement as parameters
-    mysqli_stmt_bind_param($stmt, "s", $param_username);
-    
-    // Set parameters
-    $param_username = $_SESSION['user_name'];
-    
-    // Attempt to execute the prepared statement
-    if(mysqli_stmt_execute($stmt)){
-        /* store result */
-        mysqli_stmt_store_result($stmt);
-        
-        if(mysqli_stmt_num_rows($stmt) == 1){
-            echo "This username is already taken.";
-        } else{
-            $username = trim($_POST["username"]);
-        }
-    } else{
-        echo "Oops! Something went wrong. Please try again later.";
-    }
-
-    // Close statement
-    mysqli_stmt_close($stmt);
-}
 }
