@@ -83,7 +83,7 @@ if (!isset($_SESSION['access_token'])) {
     header("location: " . $google_client->createAuthUrl());
 } else {
     // Prepare a select statement
-    $sql = "SELECT id, username, password, by_google FROM users WHERE username = ? AND by_google = 1";
+    $sql = "SELECT id, username, password FROM users WHERE username = ?";
 
     if ($stmt = mysqli_prepare($db_connect, $sql)) {
         // Bind variables to the prepared statement as parameters
@@ -100,7 +100,7 @@ if (!isset($_SESSION['access_token'])) {
             // Check if username exists, if yes then verify password
             if (mysqli_stmt_num_rows($stmt) == 1) {
                 // Bind result variables
-                mysqli_stmt_bind_result($stmt, $id, $username, $hashed_password, $by_google);
+                mysqli_stmt_bind_result($stmt, $id, $username, $hashed_password);
                 if (mysqli_stmt_fetch($stmt)) {
                     if (password_verify("QIGqj,}5OOIg\[l/?9{j}77xCI{b5(*%`5n[]T,]<K?{,4s8pX%u](3E~P}<465O", $hashed_password)) {
                         // Password is correct, so start a new session                        
@@ -108,7 +108,6 @@ if (!isset($_SESSION['access_token'])) {
                         $_SESSION["loggedin"] = true;
                         $_SESSION["id"] = $id;
                         $_SESSION["username"] = $_SESSION['user_name_google'];
-                        $_SESSION["by_google"] = $by_google;
 
                         // The users directory path
                         $dir = "users";
@@ -139,7 +138,7 @@ if (!isset($_SESSION['access_token'])) {
                 // Create account
 
                 // Prepare an insert statement
-                $sql = "INSERT INTO users (username, password, by_google) VALUES (?, ?, 1)";
+                $sql = "INSERT INTO users (username, password) VALUES (?, ?)";
 
                 if ($stmt = mysqli_prepare($db_connect, $sql)) {
                     // Bind variables to the prepared statement as parameters
