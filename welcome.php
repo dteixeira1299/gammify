@@ -51,30 +51,40 @@ include 'config.php';
                     </thead>
                     <tbody id="table-online-users">
 
-                        <?php
-                        $sql = "SELECT * FROM users";
-                        $result = $db_connect->query($sql);
-                        if ($result->num_rows > 0) {
-                            while ($row = $result->fetch_assoc()) {
-                        ?>
-                                <tr>
-                                    <td><i class="fa-solid fa-circle text-success"></i> <?= $row['username']; ?></td>
-                                </tr>
-                        <?php
-                            }
-                        } else {
-                            echo "<tr >
-                            <td colspan='5'>No Result found !</td>
-                            </tr>";
-                        }
-                        mysqli_close($db_connect);
-                        ?>
+
 
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
+
+    <script>
+        function getOnlineUsers() {
+            document.getElementById("table-online-users").innerHTML = "";
+            const xhttp = new XMLHttpRequest();
+            xhttp.onload = function() {
+                document.getElementById("table-online-users").innerHTML = this.responseText;
+            }
+            xhttp.open("GET", "get_online_users.php");
+            xhttp.send();
+
+            setTimeout(getOnlineUsers, 10000);
+        }
+
+        getOnlineUsers();
+
+        function updateLoginCurrentUser() {
+            const xhttp = new XMLHttpRequest();
+            xhttp.open("GET", "update_user_login.php");
+            xhttp.send();
+
+            setTimeout(updateLoginCurrentUser, 10000);
+        }
+
+        updateLoginCurrentUser();
+
+    </script>
 
     <script src="assets/js/bootstrap.bundle.min.js"></script>
 </body>
