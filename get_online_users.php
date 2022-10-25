@@ -25,7 +25,7 @@ if ($result->num_rows > 0) {
     }
 } else {
     echo "<tr >
-        <td colspan='5'>No Result found !</td>
+        <td colspan='5'>No players are online!</td>
         </tr>";
 }
 mysqli_close($db_connect);
