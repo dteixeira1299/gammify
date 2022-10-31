@@ -9,7 +9,7 @@ require_once "./templates/header.php";
 
         <div class="player-name">
             <label for="player-x">First player (X)</label>
-            <input type="text" id="player-x" name="player-x" required />
+            <input type="text" id="player-x" name="player-x" value="<?= $_SESSION['username'] ?>" readonly required />
         </div>
 
         <div class="player-name">

@@ -13,3 +13,16 @@
     position: relative;
     left: 0;
   }
+
+  .user-options{
+    width: 200px;
+    float: right;
+    position: absolute;
+    top: 60px;
+    right: 10px;
+    display: none;
+  }
+
+  .canvas-welcome-page{
+    height: 100vh;
+  }
