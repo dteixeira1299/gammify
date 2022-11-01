@@ -16,4 +16,3 @@ include 'config.php';
 
 $db_connect->query("UPDATE users SET last_login = NOW() WHERE id = $user_id");
 mysqli_close($db_connect);
-?>

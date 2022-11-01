@@ -13,20 +13,15 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 
 $user_id = $_SESSION["id"];
 
-$sql = "SELECT * FROM users WHERE NOW() - last_login <= 10 AND id != $user_id";
+$users = [];
+
+$sql = "SELECT username FROM users WHERE NOW() - last_login <= 10 AND id != $user_id";
 $result = $db_connect->query($sql);
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-?>
-        <tr>
-            <td><i class="fa-solid fa-circle text-success"></i> <?= $row['username']; ?></td>
-        </tr>
-<?php
+        array_push($users, $row);
     }
-} else {
-    echo "<tr >
-        <td colspan='5'>No players are online!</td>
-        </tr>";
 }
 mysqli_close($db_connect);
-?>
+
+print_r(json_encode($users));

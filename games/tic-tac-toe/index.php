@@ -15,6 +15,12 @@ require_once "./templates/header.php";
         <div class="player-name">
             <label for="player-o">Second player (O)</label>
             <input type="text" id="player-o" name="player-o" required />
+            <!-- <select id="player-o" name="player-o" aria-label="Default select example">
+                <option selected>Open this select menu</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+            </select> -->
         </div>
 
         <button type="submit">Start</button>
