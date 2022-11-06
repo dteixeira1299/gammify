@@ -33,7 +33,7 @@ function playsCount()
 {
     $room_key = $_SESSION['ROOM_KEY'];
     include "../../config.php";
-    $sql="SELECT plays FROM ticktacktoe WHERE room_key = $room_key";
+    $sql = "SELECT plays FROM ticktacktoe WHERE room_key = $room_key";
     if ($stmt = mysqli_prepare($db_connect, $sql)) {
         // Bind variables to the prepared statement as parameters
         mysqli_stmt_bind_param($stmt, "s", $param_plays);
@@ -52,13 +52,12 @@ function playsCount()
                 if (mysqli_stmt_fetch($stmt)) {
                     return $plays ? $plays : 0;
                 }
-            } 
+            }
         }
 
         // Close statement
         mysqli_stmt_close($stmt);
     }
-
 }
 
 function addPlaysCount()
@@ -67,30 +66,19 @@ function addPlaysCount()
 
     include "../../config.php";
 
-// Prepare an insert statement
-$sql = "INSERT INTO ticktacktoe (plays) VALUES (?)";
+    // Prepare an insert statement
+    $sql = "INSERT INTO ticktacktoe (plays) VALUES (?) WHERE room_key = $room_key";
 
-if ($stmt = mysqli_prepare($db_connect, $sql)) {
-    // Bind variables to the prepared statement as parameters
-    mysqli_stmt_bind_param($stmt, "s", $param_plays);
+    if ($stmt = mysqli_prepare($db_connect, $sql)) {
+        // Bind variables to the prepared statement as parameters
+        mysqli_stmt_bind_param($stmt, "s", $param_plays);
 
-    // Set parameters
-    $param_plays = playsCount()++;
+        // Set parameters
+        $param_plays = +1;
 
-    // Close statement
-    mysqli_stmt_close($stmt);
-}
-
-
-
-
-
-
-    if (!$_SESSION['PLAYS']) {
-        $_SESSION['PLAYS'] = 0;
+        // Close statement
+        mysqli_stmt_close($stmt);
     }
-
-    $_SESSION['PLAYS']++;
 }
 
 function resetPlaysCount()
