@@ -17,6 +17,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     <title>TicTacToe game</title>
 
     <link rel='stylesheet' href='style.css' type='text/css'/>
+    <link rel="stylesheet" href="../../public/assets/css/bootstrap.min.css">
 </head>
 <body>
 

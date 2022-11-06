@@ -9,14 +9,16 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 }
 
 $games = [
-  'tic-tac-toe',
+  'tick-tack-toe',
 ];
 
-if (isset($_GET['game']) & in_array(isset($_GET['game']), $games)) {
-  $game = $_GET['game'];
+if (isset($_GET['game'])) {
+  if (in_array($_GET['game'], $games)) {
+    $game = $_GET['game'];
+  }
 }
 
-include 'config.php';
+include '../config.php';
 ?>
 
 <!DOCTYPE html>
@@ -30,16 +32,15 @@ include 'config.php';
   <!-- fontawesome -->
   <link rel="stylesheet" href="assets/fontawesome/all.min.css">
   <style>
-    body {
-      font: 14px sans-serif;
-    }
+   
+
   </style>
 </head>
 
 <body>
 
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-danger">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">Gammify</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,7 +49,7 @@ include 'config.php';
       <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link active" href="?game=tic-tac-toe">Tic Tac Toe</a>
+            <a class="nav-link <?php if ($game == "tick-tack-toe") {echo "active";} ?>" href="?game=tick-tack-toe">Tick-Tack-Toe</a>
           </li>
           <li class="nav-item">
             <a class="nav-link disabled" href="#">Game 2</a>
@@ -81,12 +82,12 @@ include 'config.php';
   </nav>
 
 
-  <div class="container-fluid">
-    <div class="row vh-100">
-      <div class="col-sm-10 col-12 border border-light border-1 pt-sm-2 pt-1 pb-sm-2 pb-1">
-        <embed class="border w-100 h-100 bg-primary" type="text/html" src="<?php if(isset($_GET['game'])){echo "games/".$game;} ?>">
+  <div class="container ">
+      <div class="row full-height">
+      <div class="col-sm-9 col-12 border border-light border-1 pt-sm-2 pt-1 pb-sm-2 pb-1">
+        <embed class="w-100 h-100" type="text/html" src="<?php if (isset($_GET['game'])) {echo "../games/" . $game;} ?>">
       </div>
-      <div class="col-sm-2 col-12 border border-light border-1 pt-sm-2 pt-1 pb-sm-2 pb-1">
+      <div class="col-sm-3 col-12 border border-light border-1 pt-sm-2 pt-1 pb-sm-2 pb-1">
         <table class="table table-borderless">
           <thead>
             <tr>
@@ -97,8 +98,9 @@ include 'config.php';
           </tbody>
         </table>
       </div>
-    </div>
+      </div>
   </div>
+
 
   <script>
     function getOnlineUsers() {
@@ -106,7 +108,7 @@ include 'config.php';
       e.innerHTML = "";
 
       var xmlhttp = new XMLHttpRequest();
-      var url = "get_online_users.php";
+      var url = "../get_online_users.php";
 
       xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -141,7 +143,7 @@ include 'config.php';
 
     function updateLoginCurrentUser() {
       const xhttp = new XMLHttpRequest();
-      xhttp.open("GET", "update_user_login.php");
+      xhttp.open("GET", "../update_user_login.php");
       xhttp.send();
 
       setTimeout(updateLoginCurrentUser, 10000);

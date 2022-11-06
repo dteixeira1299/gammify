@@ -4,7 +4,7 @@
 session_start();
 
 // Include config file
-require_once "config.php";
+require_once "../config.php";
 
 // Check if the user is already logged in, if yes then redirect him to welcome page
 if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
@@ -13,12 +13,12 @@ if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
 }
 
 //Include Google Client Library for PHP autoload file
-require_once 'google-api-php-client/vendor/autoload.php';
+require_once '../google-api-php-client/vendor/autoload.php';
 
 //Make object of Google API Client for call Google API
 $google_client = new Google_Client();
 
-include 'google-api-key.php';
+include '../google-api-key.php';
 
 //Set the OAuth 2.0 Client ID
 //$google_client->setClientId('');
@@ -27,7 +27,7 @@ include 'google-api-key.php';
 //$google_client->setClientSecret('');
 
 //Set the OAuth 2.0 Redirect URI
-$google_client->setRedirectUri('http://localhost/gammify/redirect.php');
+$google_client->setRedirectUri('http://localhost/gammify/public/redirect.php');
 
 //
 $google_client->addScope('email');
@@ -110,7 +110,7 @@ if (!isset($_SESSION['access_token'])) {
                         $_SESSION["username"] = $_SESSION['user_name_google'];
 
                         // The users directory path
-                        $dir = "users";
+                        $dir = "../users";
 
                         // Check the existence of users directory
                         if (!file_exists($dir)) {
@@ -152,7 +152,7 @@ if (!isset($_SESSION['access_token'])) {
                     if (mysqli_stmt_execute($stmt)) {
 
                         // The users directory path
-                        $dir = "users";
+                        $dir = "../users";
 
                         // Check the existence of users directory
                         if (!file_exists($dir)) {

@@ -9,7 +9,7 @@ if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
 }
 
 // Include config file
-require_once "config.php";
+require_once "../config.php";
 
 // Define variables and initialize with empty values
 $username = $password = "";
@@ -62,7 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             $_SESSION["username"] = $username;
 
                             // The users directory path
-                            $dir = "users";
+                            $dir = "../users";
 
                             // Check the existence of users directory
                             if (!file_exists($dir)) {
