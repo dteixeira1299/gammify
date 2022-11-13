@@ -11,33 +11,42 @@
 
 
 <body>
+
     <div class='score'>
         <div class="score-header">
             Scores
         </div>
         <div class="player-scores X">
-            Player X: <span id="score-X">0</span>
+            Player <span id="score-X-username">X</span>: <span id="score-X">0</span>
         </div>
         <div class="player-scores O">
-            Player O: <span id="score-O">0</span>
+            Player <span id="score-O-username">O</span>: <span id="score-O">0</span>
         </div>
 
     </div>
     <div class="container">
+        <div class="info-current-game" id="info-current-game">
+            <p id="current-key-game" class="current-key-game"></p>
+        </div>
         <h1 class="welcome-text">
             Welcome to Tic-Tac-Toe!<br>
             <span class="mode-select">
                 <span class="mode PvC" onclick="onGameModeChange('PvC', this)">
                     1 Player
                 </span>
-                <span onclick="onGameModeChange('PvP', this)" class="mode PvP mode-selected">
+                <span onclick="onGameModeChange('PvP', this)" class="mode PvP">
                     2 Players
                 </span>
+            </span>
+            <br>
+            <span id="search-game" class="search-game">
+                <input type="text" class="input-game-key" id="input-game-key" placeholder="Enter game key..">
+                <button class="validate-game-key" onclick="checkInputGameKey()">OK</button>
             </span>
         </h1>
         <div class="filler"></div>
         <div class="turn-indicator">
-            Player <span class="current-player">X</span>'s Turn <span id="game-key-label">(Game Key: <span id="game-key"></span>)</span>
+            Player <span class="current-player">X</span>'s Turn
         </div>
         <div class="filler"></div>
         <div>

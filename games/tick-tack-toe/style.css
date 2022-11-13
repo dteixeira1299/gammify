@@ -17,51 +17,9 @@ body{
     background-position: center;
 }
 
-.game-key:hover {
-    cursor:pointer;
-}
-
-.tooltip {
-    position: relative;
-    display: inline-block;
-  }
-  
-  .tooltip .tooltiptext {
-    visibility: hidden;
-    width: 140px;
-    background-color: #555;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px;
-    position: absolute;
-    z-index: 1;
-    bottom: 150%;
-    left: 50%;
-    margin-left: -75px;
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-  
-  .tooltip .tooltiptext::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: #555 transparent transparent transparent;
-  }
-  
-  .tooltip:hover .tooltiptext {
-    visibility: visible;
-    opacity: 1;
-  }
-
 .welcome-text{
     text-align: center;
-    padding: 20px;
+    padding: 0px 20px 20px 20px;
     font-weight: 300;
     background-color: orangered;
     color: white;
@@ -194,8 +152,7 @@ body{
 }
 
 .score {
-
-    width: 15vw;
+    max-width: 30vw;
     position: fixed;
     bottom: 0;
     right: 0;
@@ -215,7 +172,7 @@ body{
 }
 
 .player-scores {
-    padding: 10px 0;
+    padding: 10px 10px 10px 10px;
 }
 
 .player-scores.X {
@@ -313,16 +270,18 @@ button {
     }
 
     .score{
+        max-width: none;
         width: 100vw;
-        font-size: 3rem;
+        font-size: 1rem;
     }
 
     .score .score-header{
-        font-size: 3rem;
+        font-size: 1rem;
     }
+    
 
     .turn-indicator {
-        font-size: 3rem;
+        font-size: 1rem;
     }
 
     .mode-select{
@@ -432,5 +391,38 @@ button {
       opacity: 0.5;
     }
   }
-  
 
+
+  
+.search-game{
+    display: none;
+}
+
+.search-game input[type=text] {
+    padding: 6px;
+    font-size: 17px;
+    border: none;
+  }
+
+  .search-game button {
+    padding: 6px 10px;
+    background: #ddd;
+    font-size: 17px;
+    cursor: pointer;
+    color: white;
+    background-color: orangered;
+    border: 1px solid white;
+  }
+
+  .search-game button:hover {
+    background-color: red;
+  }
+
+  .info-current-game{
+    color: white;
+    background-color: orangered;
+    text-align: right;
+    padding-right: 10px;
+    padding-top: 20px;
+  }
+  
