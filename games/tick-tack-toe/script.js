@@ -10,6 +10,12 @@ var turnCount = 0;
 
 var gameMode = '';
 
+var alert_no_player_o = false;
+
+var block_player_x = false
+
+var block_player_o = false
+
 function getUserIdSessionPHP() {
 
     var xmlhttp = new XMLHttpRequest();
@@ -60,15 +66,13 @@ function getGameDB(x) {
 
                 sessionStorage.setItem("GAME_KEY", myArr[0].game_key)
                 sessionStorage.setItem("PLAYER_X_ID", myArr[0].player_x_id)
-                sessionStorage.setItem("PLAYER_X_ID", myArr[0].player_x_id)
                 sessionStorage.setItem("PLAYER_O_ID", myArr[0].player_o_id)
                 sessionStorage.setItem("PLAYER_X_USERNAME", myArr[0].player_x_username)
                 sessionStorage.setItem("PLAYER_O_USERNAME", myArr[0].player_o_username)
-                sessionStorage.setItem("CURRENT_PLAYER", myArr[0].currentPlayer)
+                // sessionStorage.setItem("CURRENT_PLAYER", myArr[0].currentPlayer)
                 sessionStorage.setItem("PLAYER_X_WINS", myArr[0].player_x_wins)
                 sessionStorage.setItem("PLAYER_O_WINS", myArr[0].player_o_wins)
-                sessionStorage.setItem("CHECKED_BOXES", myArr[0].checkedBoxes)
-                sessionStorage.setItem("TURN_COUNT", myArr[0].turnCount)
+                // sessionStorage.setItem("TURN_COUNT", myArr[0].turnCount)
                 start()
             }
         }
@@ -79,30 +83,76 @@ function getGameDB(x) {
 
 }
 
-
-
 function start() {
-    if (sessionStorage.getItem("GAME_KEY")) {
-        currentPlayer = sessionStorage.getItem("CURRENT_PLAYER");
-        checkedBoxes = sessionStorage.getItem("CHECKED_BOXES");
-        turnCount = sessionStorage.getItem("TURN_COUNT");
-
-        document.querySelector(".turn-indicator").style.display = "inline"
-        if ((sessionStorage.getItem("LOGGED_USER_ID") == sessionStorage.getItem("PLAYER_X_ID"))) {
-            currentPlayer = "X"
-            document.querySelector('.current-player').textContent = sessionStorage.getItem("PLAYER_X_USERNAME")
-            document.getElementById("score-X-username").textContent = sessionStorage.getItem("PLAYER_X_USERNAME")
-            document.getElementById("score-O-username").textContent = sessionStorage.getItem("PLAYER_O_USERNAME")
-        } else if ((sessionStorage.getItem("LOGGED_USER_ID") == sessionStorage.getItem("PLAYER_O_ID"))) {
-            currentPlayer = "O"
-            document.querySelector('.current-player').textContent = sessionStorage.getItem("PLAYER_O_USERNAME")
-            document.getElementById("score-X-username").textContent = sessionStorage.getItem("PLAYER_X_USERNAME")
-            document.getElementById("score-O-username").textContent = sessionStorage.getItem("PLAYER_O_USERNAME")
+    if (sessionStorage.getItem("PLAYER_O_ID") == "null") {
+        if (alert_no_player_o === false) {
+            alert("Player O not defined!")
+            alert_no_player_o = true
         }
-        newGame();
+
+        player_o_not_defined()
+    } else {
+        if (sessionStorage.getItem("GAME_KEY")) {
+
+            document.querySelector(".turn-indicator").style.display = "inline"
+
+            document.getElementById("score-X-username").textContent = sessionStorage.getItem("PLAYER_X_USERNAME")
+            document.getElementById("score-O-username").textContent = sessionStorage.getItem("PLAYER_O_USERNAME")
+
+            currentPlayer = ["X", "O"].sort()[0]
+
+            if (currentPlayer == "X") {
+                console.log("aqui")
+                console.log(currentPlayer)
+                block_player_o = true
+                document.querySelector('.current-player').textContent = sessionStorage.getItem("PLAYER_X_USERNAME")
+            } else if (currentPlayer == "O") {
+                console.log("aqui2")
+                block_player_x = true
+                document.querySelector('.current-player').textContent = sessionStorage.getItem("PLAYER_O_USERNAME")
+            }
+            newGame()
+            get_move_player()
+            check_block_player()
+
+        }
     }
 
+
 }
+
+function check_block_player() {
+    if (block_player_o == true && block_player_x == false) {
+        document.getElementById('0-0').disabled = "disabled"
+        document.getElementById('0-1').disabled = "disabled"
+        document.getElementById('0-2').disabled = "disabled"
+        document.getElementById('1-0').disabled = "disabled"
+        document.getElementById('1-1').disabled = "disabled"
+        document.getElementById('1-2').disabled = "disabled"
+        document.getElementById('2-0').disabled = "disabled"
+        document.getElementById('2-1').disabled = "disabled"
+        document.getElementById('2-2').disabled = "disabled"
+    } else {
+        document.getElementById('0-0').disabled = ""
+        document.getElementById('0-1').disabled = ""
+        document.getElementById('0-2').disabled = ""
+        document.getElementById('1-0').disabled = ""
+        document.getElementById('1-1').disabled = ""
+        document.getElementById('1-2').disabled = ""
+        document.getElementById('2-0').disabled = ""
+        document.getElementById('2-1').disabled = ""
+        document.getElementById('2-2').disabled = ""
+    }
+}
+
+function player_o_not_defined() {
+    if (sessionStorage.getItem("PLAYER_O_ID") == "null") {
+        getGameDB(sessionStorage.getItem("GAME_KEY"))
+
+        setTimeout(player_o_not_defined, 2000);
+    }
+}
+
 
 
 document.querySelectorAll('.box').forEach((value, key) => {
@@ -146,13 +196,62 @@ function onGameModeChange(mode, _el) {
     document.querySelector('#score-O').textContent = 0;
 }
 
+function send_move_player(move_element_id, move_currentPlayer, game_key) {
+    var xmlhttp = new XMLHttpRequest();
+    var url = "send_move_player.php?move_element_id=" + move_element_id + "&move_currentPlayer=" + move_currentPlayer + "&game_key=" + game_key;
+
+    xmlhttp.open("GET", url);
+    xmlhttp.send();
+}
+
+function get_move_player() {
+    var xmlhttp = new XMLHttpRequest();
+    var url = "get_move_player.php?game_key=" + sessionStorage.getItem("GAME_KEY");
+
+
+    xmlhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var myArr = JSON.parse(this.responseText);
+            if (myArr.length == 1) {
+                if (myArr[0].move_currentPlayer == "X" || myArr[0].move_currentPlayer == "O") {
+                    sessionStorage.setItem("MOVE_CURRENT_PLAYER", myArr[0].move_currentPlayer)
+                    sessionStorage.setItem("MOVE_ELEMENT_ID", myArr[0].move_element_id)
+                } else {
+                    if (sessionStorage.getItem("MOVE_CURRENT_PLAYER") && sessionStorage.getItem("MOVE_ELEMENT_ID")) {
+                        sessionStorage.removeItem("MOVE_CURRENT_PLAYER")
+                        sessionStorage.removeItem("MOVE_ELEMENT_ID")
+                    }
+                }
+            }
+        }
+    };
+
+    xmlhttp.open("GET", url);
+    xmlhttp.send();
+
+    if (sessionStorage.getItem("MOVE_CURRENT_PLAYER") && sessionStorage.getItem("MOVE_ELEMENT_ID")) {
+        if (document.getElementById(sessionStorage.getItem("MOVE_ELEMENT_ID")).value == "") {
+            currentPlayer = sessionStorage.getItem("MOVE_CURRENT_PLAYER")
+            onCheckBox(document.querySelector(`[id='${sessionStorage.getItem("MOVE_ELEMENT_ID")}']`))
+
+        }
+    }
+
+    if (sessionStorage.getItem("GAME_KEY")) {
+        setTimeout(get_move_player, 2000);
+    }
+}
+
+
 
 function onCheckBox(element) {
+
     checkedBoxes.push({ box: element.id, player: currentPlayer });
     checkElement(element);
     turnCount++;
     var gameStatus = checkWinner();
     switchPlayer();
+
     if (turnCount % 2 == 1 && gameStatus != 'game over' && gameStatus != 'game drawn' && gameMode == "PvC") {
         computerPlays();
     }
@@ -161,6 +260,9 @@ function onCheckBox(element) {
 function checkElement(element) {
     element.value = currentPlayer;
     element.disabled = "disabled";
+    if (sessionStorage.getItem("GAME_KEY") && gameMode == "PvP") {
+        send_move_player(element.id, currentPlayer, sessionStorage.getItem("GAME_KEY"))
+    }
 }
 
 function onUncheckBox(element, isImplicit = false) {
@@ -178,9 +280,13 @@ function switchPlayer() {
     if (gameMode == "PvP") {
         if (currentPlayer == "X") {
             currentPlayer = "O"
+            block_player_x = true
+            block_player_o = false
             document.querySelector('.current-player').textContent = sessionStorage.getItem("PLAYER_O_USERNAME")
         } else if (currentPlayer == "O") {
             currentPlayer = "X"
+            block_player_x = false
+            block_player_o = true
             document.querySelector('.current-player').textContent = sessionStorage.getItem("PLAYER_X_USERNAME")
         }
 
@@ -268,7 +374,6 @@ function clearBoard() {
 function showWinner(noWinner = false) {
 
     if (noWinner) {
-        console.log(checkedBoxes)
         document.querySelector('.winner-screen .body').innerHTML = 'Its a Draw!';
         document.querySelector('.winner-screen').classList.toggle('fade-in');
         document.querySelector('.winner-screen').classList.toggle('fade-out');
@@ -311,6 +416,12 @@ document.querySelectorAll('.okay-button').forEach((value, key) => {
 function newGame() {
     showLoader();
     clearBoard();
+    if (sessionStorage.getItem("GAME_KEY") && gameMode == "PvP" && sessionStorage.getItem("MOVE_CURRENT_PLAYER") && sessionStorage.getItem("MOVE_ELEMENT_ID")) {
+        send_move_player("NULL", "NULL", sessionStorage.getItem("GAME_KEY"))
+        sessionStorage.removeItem("MOVE_CURRENT_PLAYER")
+        sessionStorage.removeItem("MOVE_ELEMENT_ID")
+
+    }
     document.querySelector('.winner-screen').classList.remove('fade-in');
     document.querySelector('.winner-screen').classList.add('fade-out');
     switchPlayer()
