@@ -102,18 +102,26 @@ function start() {
             currentPlayer = ["X", "O"].sort()[0]
 
             if (currentPlayer == "X") {
-                console.log("aqui")
-                console.log(currentPlayer)
                 block_player_o = true
                 document.querySelector('.current-player').textContent = sessionStorage.getItem("PLAYER_X_USERNAME")
             } else if (currentPlayer == "O") {
-                console.log("aqui2")
                 block_player_x = true
                 document.querySelector('.current-player').textContent = sessionStorage.getItem("PLAYER_O_USERNAME")
             }
-            newGame()
+            showLoader();
+            clearBoard();
+            if (sessionStorage.getItem("GAME_KEY") && gameMode == "PvP" && sessionStorage.getItem("MOVE_CURRENT_PLAYER") && sessionStorage.getItem("MOVE_ELEMENT_ID")) {
+                send_move_player("NULL", "NULL", sessionStorage.getItem("GAME_KEY"))
+                sessionStorage.removeItem("MOVE_CURRENT_PLAYER")
+                sessionStorage.removeItem("MOVE_ELEMENT_ID")
+
+            }
+            document.querySelector('.winner-screen').classList.remove('fade-in');
+            document.querySelector('.winner-screen').classList.add('fade-out');
+            setTimeout(hideLoader, 500);
             get_move_player()
             check_block_player()
+            player_disconnect()
 
         }
     }
@@ -121,8 +129,38 @@ function start() {
 
 }
 
+
+
+function player_disconnect(){
+
+      var xmlhttp = new XMLHttpRequest();
+      var url = "../../get_online_users.php";
+
+      xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          var myArr = JSON.parse(this.responseText);
+          var i;
+          if (myArr.length != 0) {
+            for (i = 0; i < myArr.length; i++) {
+              if((!myArr[i].id.includes(sessionStorage.getItem("PLAYER_X_ID")) || !myArr[i].id.includes(sessionStorage.getItem("PLAYER_O_ID"))) && sessionStorage.getItem("PLAYER_O_ID") != "null" && sessionStorage.getItem("PLAYER_X_ID") != "null") {
+                alert("User disconnect")
+              }
+            }
+          }
+        }
+      };
+
+      xmlhttp.open("GET", url, true);
+      xmlhttp.send();
+
+      if (sessionStorage.getItem("GAME_KEY")) {
+        setTimeout(player_disconnect, 2000);
+    }
+}
+
 function check_block_player() {
-    if (block_player_o == true && block_player_x == false) {
+
+    if ((sessionStorage.getItem("LOGGED_USER_ID") == sessionStorage.getItem("PLAYER_X_ID")) && currentPlayer == "O") {
         document.getElementById('0-0').disabled = "disabled"
         document.getElementById('0-1').disabled = "disabled"
         document.getElementById('0-2').disabled = "disabled"
@@ -132,17 +170,42 @@ function check_block_player() {
         document.getElementById('2-0').disabled = "disabled"
         document.getElementById('2-1').disabled = "disabled"
         document.getElementById('2-2').disabled = "disabled"
-    } else {
-        document.getElementById('0-0').disabled = ""
-        document.getElementById('0-1').disabled = ""
-        document.getElementById('0-2').disabled = ""
-        document.getElementById('1-0').disabled = ""
-        document.getElementById('1-1').disabled = ""
-        document.getElementById('1-2').disabled = ""
-        document.getElementById('2-0').disabled = ""
-        document.getElementById('2-1').disabled = ""
-        document.getElementById('2-2').disabled = ""
+    } else if ((sessionStorage.getItem("LOGGED_USER_ID") == sessionStorage.getItem("PLAYER_O_ID")) && currentPlayer == "X") {
+        document.getElementById('0-0').disabled = "disabled"
+        document.getElementById('0-1').disabled = "disabled"
+        document.getElementById('0-2').disabled = "disabled"
+        document.getElementById('1-0').disabled = "disabled"
+        document.getElementById('1-1').disabled = "disabled"
+        document.getElementById('1-2').disabled = "disabled"
+        document.getElementById('2-0').disabled = "disabled"
+        document.getElementById('2-1').disabled = "disabled"
+        document.getElementById('2-2').disabled = "disabled"
+    } else if ((sessionStorage.getItem("LOGGED_USER_ID") == sessionStorage.getItem("PLAYER_X_ID")) && currentPlayer == "X") {
+        if (document.getElementById('0-0').value == "") { document.getElementById('0-0').disabled = "" }
+        if (document.getElementById('0-1').value == "") { document.getElementById('0-1').disabled = "" }
+        if (document.getElementById('0-2').value == "") { document.getElementById('0-2').disabled = "" }
+        if (document.getElementById('1-0').value == "") { document.getElementById('1-0').disabled = "" }
+        if (document.getElementById('1-1').value == "") { document.getElementById('1-1').disabled = "" }
+        if (document.getElementById('1-2').value == "") { document.getElementById('1-2').disabled = "" }
+        if (document.getElementById('2-0').value == "") { document.getElementById('2-0').disabled = "" }
+        if (document.getElementById('2-1').value == "") { document.getElementById('2-1').disabled = "" }
+        if (document.getElementById('2-2').value == "") { document.getElementById('2-2').disabled = "" }
+    } else if ((sessionStorage.getItem("LOGGED_USER_ID") == sessionStorage.getItem("PLAYER_O_ID")) && currentPlayer == "O") {
+        if (document.getElementById('0-0').value == "") { document.getElementById('0-0').disabled = "" }
+        if (document.getElementById('0-1').value == "") { document.getElementById('0-1').disabled = "" }
+        if (document.getElementById('0-2').value == "") { document.getElementById('0-2').disabled = "" }
+        if (document.getElementById('1-0').value == "") { document.getElementById('1-0').disabled = "" }
+        if (document.getElementById('1-1').value == "") { document.getElementById('1-1').disabled = "" }
+        if (document.getElementById('1-2').value == "") { document.getElementById('1-2').disabled = "" }
+        if (document.getElementById('2-0').value == "") { document.getElementById('2-0').disabled = "" }
+        if (document.getElementById('2-1').value == "") { document.getElementById('2-1').disabled = "" }
+        if (document.getElementById('2-2').value == "") { document.getElementById('2-2').disabled = "" }
     }
+
+    if (sessionStorage.getItem("GAME_KEY")) {
+        setTimeout(check_block_player, 2000);
+    }
+
 }
 
 function player_o_not_defined() {
