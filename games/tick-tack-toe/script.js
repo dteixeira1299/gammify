@@ -69,10 +69,11 @@ function getGameDB(x) {
                 sessionStorage.setItem("PLAYER_O_ID", myArr[0].player_o_id)
                 sessionStorage.setItem("PLAYER_X_USERNAME", myArr[0].player_x_username)
                 sessionStorage.setItem("PLAYER_O_USERNAME", myArr[0].player_o_username)
-                // sessionStorage.setItem("CURRENT_PLAYER", myArr[0].currentPlayer)
-                sessionStorage.setItem("PLAYER_X_WINS", myArr[0].player_x_wins)
-                sessionStorage.setItem("PLAYER_O_WINS", myArr[0].player_o_wins)
-                // sessionStorage.setItem("TURN_COUNT", myArr[0].turnCount)
+
+                if(sessionStorage.getItem("PLAYER_O_ID") == "null" && (sessionStorage.getItem("PLAYER_X_ID") != sessionStorage.getItem("LOGGED_USER_ID"))){
+                    update_player_o(sessionStorage.getItem("GAME_KEY"))
+                }
+
                 start()
             }
         }
@@ -81,6 +82,14 @@ function getGameDB(x) {
     xmlhttp.open("GET", url, true);
     xmlhttp.send();
 
+}
+
+function update_player_o(x){
+    var xmlhttp = new XMLHttpRequest();
+    var url = "update_player_o.php?game_key="+x;
+
+    xmlhttp.open("GET", url);
+    xmlhttp.send();
 }
 
 function start() {
@@ -121,7 +130,7 @@ function start() {
             setTimeout(hideLoader, 500);
             get_move_player()
             check_block_player()
-            player_disconnect()
+            // player_disconnect()
 
         }
     }

@@ -8,6 +8,8 @@ session_start();
 
 $game_key = $_GET["game_key"];
 
+$user_id = $_SESSION['id'];
+
 $game = [];
 
 $sql = "SELECT ticktacktoe.*, px.username 'player_x_username', po.username 'player_o_username' FROM ticktacktoe " .
@@ -16,7 +18,8 @@ $sql = "SELECT ticktacktoe.*, px.username 'player_x_username', po.username 'play
 "LEFT JOIN users po ".
 "ON po.id = ticktacktoe.player_o_id ".
 "WHERE ticktacktoe.game_key='$game_key' ". 
-"AND ticktacktoe.deleted_at IS NULL";
+"AND ticktacktoe.deleted_at IS NULL ". 
+"AND (ticktacktoe.player_o_id IS NULL OR (ticktacktoe.player_x_id = '$user_id' OR ticktacktoe.player_o_id = '$user_id'))";
 
 $result = $db_connect->query($sql);
 if ($result->num_rows > 0) {
