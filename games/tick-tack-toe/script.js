@@ -95,7 +95,7 @@ function update_player_o(x){
 function start() {
     if (sessionStorage.getItem("PLAYER_O_ID") == "null") {
         if (alert_no_player_o === false) {
-            alert("Player O not defined!")
+            console.log("Please wait for second player....")
             alert_no_player_o = true
         }
 
@@ -151,9 +151,11 @@ function player_disconnect(){
           var i;
           if (myArr.length != 0) {
             for (i = 0; i < myArr.length; i++) {
-              if((!myArr[i].id.includes(sessionStorage.getItem("PLAYER_X_ID")) || !myArr[i].id.includes(sessionStorage.getItem("PLAYER_O_ID"))) && sessionStorage.getItem("PLAYER_O_ID") != "null" && sessionStorage.getItem("PLAYER_X_ID") != "null") {
-                alert("User disconnect")
-              }
+                if(!myArr[i].id.includes(sessionStorage.getItem("PLAYER_X_ID"))) {
+                    console.log("Player X is diconected....")
+                } else if(!myArr[i].id.includes(sessionStorage.getItem("PLAYER_O_ID"))){
+                    console.log("Player O is diconected....")
+                }
             }
           }
         }
