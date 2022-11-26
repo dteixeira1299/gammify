@@ -116,7 +116,7 @@ body{
 
 
 
-#new-game, .okay-button {
+#new-game, .okay-button, .new-game-key {
     padding: 10px 20px;
     color: white;
     background-color: orangered;
@@ -127,19 +127,13 @@ body{
     transition: all 200ms ease-in-out;
 }
 
-.okay-button {
-
-    background-color: purple;
-
-}
-
-#new-game:hover, .okay-button:hover{
+#new-game:hover, .okay-button:hover, .new-game-key:hover{
     transform: scale(1.15, 1.15);
     background-color: red;
     cursor: pointer;
 }
 
-#new-game:active, .okay-button:active {
+#new-game:active, .okay-button:active, .new-game-key:active {
     transition: none;
     background-color: maroon;
 

@@ -12,10 +12,6 @@ var gameMode = '';
 
 var alert_no_player_o = false;
 
-var block_player_x = false
-
-var block_player_o = false
-
 function getUserIdSessionPHP() {
 
     var xmlhttp = new XMLHttpRequest();
@@ -31,6 +27,7 @@ function getUserIdSessionPHP() {
     xmlhttp.send();
 
 }
+getUserIdSessionPHP()
 
 
 function createNewGameDB() {
@@ -41,6 +38,7 @@ function createNewGameDB() {
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             sessionStorage.setItem("GAME_KEY", this.responseText)
+            getGameDB(this.responseText)
         }
     };
 
@@ -94,12 +92,11 @@ function update_player_o(x){
 
 function start() {
     if (sessionStorage.getItem("PLAYER_O_ID") == "null") {
-        if (alert_no_player_o === false) {
-            console.log("Please wait for second player....")
+        if (alert_no_player_o === false && (sessionStorage.getItem("PLAYER_X_ID") == sessionStorage.getItem("LOGGED_USER_ID"))) {
+            alert("Please wait for second player....")
             alert_no_player_o = true
         }
-
-        player_o_not_defined()
+        getGameDB(sessionStorage.getItem("GAME_KEY"))
     } else {
         if (sessionStorage.getItem("GAME_KEY")) {
 
@@ -111,10 +108,8 @@ function start() {
             currentPlayer = ["X", "O"].sort()[0]
 
             if (currentPlayer == "X") {
-                block_player_o = true
                 document.querySelector('.current-player').textContent = sessionStorage.getItem("PLAYER_X_USERNAME")
             } else if (currentPlayer == "O") {
-                block_player_x = true
                 document.querySelector('.current-player').textContent = sessionStorage.getItem("PLAYER_O_USERNAME")
             }
             showLoader();
@@ -130,7 +125,7 @@ function start() {
             setTimeout(hideLoader, 500);
             get_move_player()
             check_block_player()
-            // player_disconnect()
+            player_disconnect()
 
         }
     }
@@ -138,12 +133,10 @@ function start() {
 
 }
 
-
-
 function player_disconnect(){
 
       var xmlhttp = new XMLHttpRequest();
-      var url = "../../get_online_users.php";
+      var url = "../../get_all_online_users.php";
 
       xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -151,10 +144,8 @@ function player_disconnect(){
           var i;
           if (myArr.length != 0) {
             for (i = 0; i < myArr.length; i++) {
-                if(!myArr[i].id.includes(sessionStorage.getItem("PLAYER_X_ID"))) {
-                    console.log("Player X is diconected....")
-                } else if(!myArr[i].id.includes(sessionStorage.getItem("PLAYER_O_ID"))){
-                    console.log("Player O is diconected....")
+                if(!myArr[i].id.includes(sessionStorage.getItem("PLAYER_X_ID")) || !myArr[i].id.includes(sessionStorage.getItem("PLAYER_O_ID"))) {
+                    console.log("Some player is disconected....")
                 }
             }
           }
@@ -165,7 +156,7 @@ function player_disconnect(){
       xmlhttp.send();
 
       if (sessionStorage.getItem("GAME_KEY")) {
-        setTimeout(player_disconnect, 2000);
+        setTimeout(player_disconnect, 0);
     }
 }
 
@@ -214,17 +205,9 @@ function check_block_player() {
     }
 
     if (sessionStorage.getItem("GAME_KEY")) {
-        setTimeout(check_block_player, 2000);
+        setTimeout(check_block_player, 0);
     }
 
-}
-
-function player_o_not_defined() {
-    if (sessionStorage.getItem("PLAYER_O_ID") == "null") {
-        getGameDB(sessionStorage.getItem("GAME_KEY"))
-
-        setTimeout(player_o_not_defined, 2000);
-    }
 }
 
 
@@ -291,10 +274,8 @@ function get_move_player() {
                     sessionStorage.setItem("MOVE_CURRENT_PLAYER", myArr[0].move_currentPlayer)
                     sessionStorage.setItem("MOVE_ELEMENT_ID", myArr[0].move_element_id)
                 } else {
-                    if (sessionStorage.getItem("MOVE_CURRENT_PLAYER") && sessionStorage.getItem("MOVE_ELEMENT_ID")) {
-                        sessionStorage.removeItem("MOVE_CURRENT_PLAYER")
-                        sessionStorage.removeItem("MOVE_ELEMENT_ID")
-                    }
+                    sessionStorage.removeItem("MOVE_CURRENT_PLAYER")
+                    sessionStorage.removeItem("MOVE_ELEMENT_ID")
                 }
             }
         }
@@ -307,14 +288,19 @@ function get_move_player() {
         if (document.getElementById(sessionStorage.getItem("MOVE_ELEMENT_ID")).value == "") {
             currentPlayer = sessionStorage.getItem("MOVE_CURRENT_PLAYER")
             onCheckBox(document.querySelector(`[id='${sessionStorage.getItem("MOVE_ELEMENT_ID")}']`))
-
         }
     }
 
     if (sessionStorage.getItem("GAME_KEY")) {
-        setTimeout(get_move_player, 2000);
+        setTimeout(get_move_player, 0);
     }
 }
+
+function testCurrentPlayer(){
+    console.log(currentPlayer)
+    setTimeout(testCurrentPlayer, 0);
+}
+testCurrentPlayer()
 
 
 
@@ -354,13 +340,9 @@ function switchPlayer() {
     if (gameMode == "PvP") {
         if (currentPlayer == "X") {
             currentPlayer = "O"
-            block_player_x = true
-            block_player_o = false
             document.querySelector('.current-player').textContent = sessionStorage.getItem("PLAYER_O_USERNAME")
         } else if (currentPlayer == "O") {
             currentPlayer = "X"
-            block_player_x = false
-            block_player_o = true
             document.querySelector('.current-player').textContent = sessionStorage.getItem("PLAYER_X_USERNAME")
         }
 
