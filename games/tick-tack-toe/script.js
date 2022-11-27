@@ -32,8 +32,6 @@ getUserIdSessionPHP()
 
 function createNewGameDB() {
 
-    gameMode = "PvP";
-
     var xmlhttp = new XMLHttpRequest();
     var url = "create_new_game.php";
 
@@ -47,6 +45,34 @@ function createNewGameDB() {
     xmlhttp.open("GET", url, true);
     xmlhttp.send();
 
+    gameMode = "PvP";
+
+    document.getElementById("new-game-key").textContent="Exit Game"
+    document.getElementById("new-game-key").setAttribute('onclick','exitGame(sessionStorage.getItem("GAME_KEY"))')
+
+}
+
+function exitGame(x){
+    var xmlhttp = new XMLHttpRequest();
+    var url = "exit_game.php?game_key=" + x;
+
+    xmlhttp.open("GET", url);
+    xmlhttp.send();
+
+    document.getElementById("current-key-game").textContent = ""
+
+    sessionStorage.removeItem("GAME_KEY")
+    sessionStorage.removeItem("PLAYER_X_ID")
+    sessionStorage.removeItem("PLAYER_O_ID")
+    sessionStorage.removeItem("PLAYER_O_ID")
+    sessionStorage.removeItem("PLAYER_X_USERNAME")
+    sessionStorage.removeItem("PLAYER_O_USERNAME")
+    currentPlayer=""
+    clearBoard();
+    alert_no_player_o = false
+
+    document.getElementById("new-game-key").textContent="New Game"
+    document.getElementById("new-game-key").setAttribute('onclick','createNewGameDB()')
 }
 
 
