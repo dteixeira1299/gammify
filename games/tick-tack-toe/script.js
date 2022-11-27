@@ -32,6 +32,8 @@ getUserIdSessionPHP()
 
 function createNewGameDB() {
 
+    gameMode = "PvP";
+
     var xmlhttp = new XMLHttpRequest();
     var url = "create_new_game.php";
 
@@ -68,7 +70,7 @@ function getGameDB(x) {
                 sessionStorage.setItem("PLAYER_X_USERNAME", myArr[0].player_x_username)
                 sessionStorage.setItem("PLAYER_O_USERNAME", myArr[0].player_o_username)
 
-                if(sessionStorage.getItem("PLAYER_O_ID") == "null" && (sessionStorage.getItem("PLAYER_X_ID") != sessionStorage.getItem("LOGGED_USER_ID"))){
+                if (sessionStorage.getItem("PLAYER_O_ID") == "null" && (sessionStorage.getItem("PLAYER_X_ID") != sessionStorage.getItem("LOGGED_USER_ID"))) {
                     update_player_o(sessionStorage.getItem("GAME_KEY"))
                 }
 
@@ -82,9 +84,9 @@ function getGameDB(x) {
 
 }
 
-function update_player_o(x){
+function update_player_o(x) {
     var xmlhttp = new XMLHttpRequest();
-    var url = "update_player_o.php?game_key="+x;
+    var url = "update_player_o.php?game_key=" + x;
 
     xmlhttp.open("GET", url);
     xmlhttp.send();
@@ -114,18 +116,12 @@ function start() {
             }
             showLoader();
             clearBoard();
-            if (sessionStorage.getItem("GAME_KEY") && gameMode == "PvP" && sessionStorage.getItem("MOVE_CURRENT_PLAYER") && sessionStorage.getItem("MOVE_ELEMENT_ID")) {
-                send_move_player("NULL", "NULL", sessionStorage.getItem("GAME_KEY"))
-                sessionStorage.removeItem("MOVE_CURRENT_PLAYER")
-                sessionStorage.removeItem("MOVE_ELEMENT_ID")
-
-            }
             document.querySelector('.winner-screen').classList.remove('fade-in');
             document.querySelector('.winner-screen').classList.add('fade-out');
             setTimeout(hideLoader, 500);
             get_move_player()
             check_block_player()
-            player_disconnect()
+            // player_disconnect()
 
         }
     }
@@ -133,29 +129,29 @@ function start() {
 
 }
 
-function player_disconnect(){
+function player_disconnect() {
 
-      var xmlhttp = new XMLHttpRequest();
-      var url = "../../get_all_online_users.php";
+    var xmlhttp = new XMLHttpRequest();
+    var url = "../../get_all_online_users.php";
 
-      xmlhttp.onreadystatechange = function() {
+    xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-          var myArr = JSON.parse(this.responseText);
-          var i;
-          if (myArr.length != 0) {
-            for (i = 0; i < myArr.length; i++) {
-                if(!myArr[i].id.includes(sessionStorage.getItem("PLAYER_X_ID")) || !myArr[i].id.includes(sessionStorage.getItem("PLAYER_O_ID"))) {
-                    console.log("Some player is disconected....")
+            var myArr = JSON.parse(this.responseText);
+            var i;
+            if (myArr.length != 0) {
+                for (i = 0; i < myArr.length; i++) {
+                    if (!myArr[i].id.includes(sessionStorage.getItem("PLAYER_X_ID")) || !myArr[i].id.includes(sessionStorage.getItem("PLAYER_O_ID"))) {
+                        console.log("Some player is disconected....")
+                    }
                 }
             }
-          }
         }
-      };
+    };
 
-      xmlhttp.open("GET", url, true);
-      xmlhttp.send();
+    xmlhttp.open("GET", url, true);
+    xmlhttp.send();
 
-      if (sessionStorage.getItem("GAME_KEY")) {
+    if (sessionStorage.getItem("GAME_KEY")) {
         setTimeout(player_disconnect, 0);
     }
 }
@@ -287,7 +283,14 @@ function get_move_player() {
     if (sessionStorage.getItem("MOVE_CURRENT_PLAYER") && sessionStorage.getItem("MOVE_ELEMENT_ID")) {
         if (document.getElementById(sessionStorage.getItem("MOVE_ELEMENT_ID")).value == "") {
             currentPlayer = sessionStorage.getItem("MOVE_CURRENT_PLAYER")
-            onCheckBox(document.querySelector(`[id='${sessionStorage.getItem("MOVE_ELEMENT_ID")}']`))
+            // onCheckBox(document.querySelector(`[id='${sessionStorage.getItem("MOVE_ELEMENT_ID")}']`))
+            var element = document.querySelector(`[id='${sessionStorage.getItem("MOVE_ELEMENT_ID")}']`)
+            checkedBoxes.push({ box: element.id, player: currentPlayer });
+            element.value = currentPlayer;
+            element.disabled = "disabled";
+            turnCount++;
+            checkWinner();
+            switchPlayer();
         }
     }
 
@@ -295,14 +298,6 @@ function get_move_player() {
         setTimeout(get_move_player, 0);
     }
 }
-
-function testCurrentPlayer(){
-    console.log(currentPlayer)
-    setTimeout(testCurrentPlayer, 0);
-}
-testCurrentPlayer()
-
-
 
 function onCheckBox(element) {
 
@@ -336,7 +331,6 @@ function onUncheckBox(element, isImplicit = false) {
 }
 
 function switchPlayer() {
-
     if (gameMode == "PvP") {
         if (currentPlayer == "X") {
             currentPlayer = "O"
@@ -472,12 +466,6 @@ document.querySelectorAll('.okay-button').forEach((value, key) => {
 function newGame() {
     showLoader();
     clearBoard();
-    if (sessionStorage.getItem("GAME_KEY") && gameMode == "PvP" && sessionStorage.getItem("MOVE_CURRENT_PLAYER") && sessionStorage.getItem("MOVE_ELEMENT_ID")) {
-        send_move_player("NULL", "NULL", sessionStorage.getItem("GAME_KEY"))
-        sessionStorage.removeItem("MOVE_CURRENT_PLAYER")
-        sessionStorage.removeItem("MOVE_ELEMENT_ID")
-
-    }
     document.querySelector('.winner-screen').classList.remove('fade-in');
     document.querySelector('.winner-screen').classList.add('fade-out');
     switchPlayer()
