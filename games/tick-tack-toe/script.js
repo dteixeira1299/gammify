@@ -59,20 +59,22 @@ function exitGame(x){
     xmlhttp.open("GET", url);
     xmlhttp.send();
 
-    document.getElementById("current-key-game").textContent = ""
+    location.reload();
 
-    sessionStorage.removeItem("GAME_KEY")
-    sessionStorage.removeItem("PLAYER_X_ID")
-    sessionStorage.removeItem("PLAYER_O_ID")
-    sessionStorage.removeItem("PLAYER_O_ID")
-    sessionStorage.removeItem("PLAYER_X_USERNAME")
-    sessionStorage.removeItem("PLAYER_O_USERNAME")
-    currentPlayer=""
-    clearBoard();
-    alert_no_player_o = false
+    // document.getElementById("current-key-game").textContent = ""
 
-    document.getElementById("new-game-key").textContent="New Game"
-    document.getElementById("new-game-key").setAttribute('onclick','createNewGameDB()')
+    // sessionStorage.removeItem("GAME_KEY")
+    // sessionStorage.removeItem("PLAYER_X_ID")
+    // sessionStorage.removeItem("PLAYER_O_ID")
+    // sessionStorage.removeItem("PLAYER_O_ID")
+    // sessionStorage.removeItem("PLAYER_X_USERNAME")
+    // sessionStorage.removeItem("PLAYER_O_USERNAME")
+    // currentPlayer=""
+    // clearBoard();
+    // alert_no_player_o = false
+
+    // document.getElementById("new-game-key").textContent="New Game"
+    // document.getElementById("new-game-key").setAttribute('onclick','createNewGameDB()')
 }
 
 
@@ -492,6 +494,11 @@ document.querySelectorAll('.okay-button').forEach((value, key) => {
 function newGame() {
     showLoader();
     clearBoard();
+    if (sessionStorage.getItem("GAME_KEY") && gameMode == "PvP") {
+        send_move_player("NULL", "NULL", sessionStorage.getItem("GAME_KEY"))
+        sessionStorage.removeItem("MOVE_CURRENT_PLAYER")
+        sessionStorage.removeItem("MOVE_ELEMENT_ID")
+    }
     document.querySelector('.winner-screen').classList.remove('fade-in');
     document.querySelector('.winner-screen').classList.add('fade-out');
     switchPlayer()
