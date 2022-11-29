@@ -47,12 +47,12 @@ function createNewGameDB() {
 
     gameMode = "PvP";
 
-    document.getElementById("new-game-key").textContent="Exit Game"
-    document.getElementById("new-game-key").setAttribute('onclick','exitGame(sessionStorage.getItem("GAME_KEY"))')
+    document.getElementById("new-game-key").textContent = "Exit Game"
+    document.getElementById("new-game-key").setAttribute('onclick', 'exitGame(sessionStorage.getItem("GAME_KEY"))')
 
 }
 
-function exitGame(x){
+function exitGame(x) {
     var xmlhttp = new XMLHttpRequest();
     var url = "exit_game.php?game_key=" + x;
 
@@ -149,7 +149,7 @@ function start() {
             setTimeout(hideLoader, 500);
             get_move_player()
             check_block_player()
-            // player_disconnect()
+            player_disconnect()
 
         }
     }
@@ -168,8 +168,10 @@ function player_disconnect() {
             var i;
             if (myArr.length != 0) {
                 for (i = 0; i < myArr.length; i++) {
-                    if (!myArr[i].id.includes(sessionStorage.getItem("PLAYER_X_ID")) || !myArr[i].id.includes(sessionStorage.getItem("PLAYER_O_ID"))) {
-                        console.log("Some player is disconected....")
+                    if (myArr[i].id.includes(sessionStorage.getItem("PLAYER_X_ID")) || myArr[i].id.includes(sessionStorage.getItem("PLAYER_O_ID"))) {
+                        console.log("All users are connected!")
+                    } else {
+                        alert('xau')
                     }
                 }
             }
@@ -450,6 +452,11 @@ function clearBoard() {
 }
 
 function showWinner(noWinner = false) {
+    if (sessionStorage.getItem("GAME_KEY") && gameMode == "PvP") {
+        send_move_player("NULL", "NULL", sessionStorage.getItem("GAME_KEY"))
+        sessionStorage.removeItem("MOVE_CURRENT_PLAYER")
+        sessionStorage.removeItem("MOVE_ELEMENT_ID")
+    }
 
     if (noWinner) {
         document.querySelector('.winner-screen .body').innerHTML = 'Its a Draw!';
@@ -494,11 +501,6 @@ document.querySelectorAll('.okay-button').forEach((value, key) => {
 function newGame() {
     showLoader();
     clearBoard();
-    if (sessionStorage.getItem("GAME_KEY") && gameMode == "PvP") {
-        send_move_player("NULL", "NULL", sessionStorage.getItem("GAME_KEY"))
-        sessionStorage.removeItem("MOVE_CURRENT_PLAYER")
-        sessionStorage.removeItem("MOVE_ELEMENT_ID")
-    }
     document.querySelector('.winner-screen').classList.remove('fade-in');
     document.querySelector('.winner-screen').classList.add('fade-out');
     switchPlayer()

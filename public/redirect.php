@@ -83,7 +83,7 @@ if (!isset($_SESSION['access_token'])) {
     header("location: " . $google_client->createAuthUrl());
 } else {
     // Prepare a select statement
-    $sql = "SELECT id, username, password FROM users WHERE username = ?";
+    $sql = "SELECT id, username, avatar, bg, password FROM users WHERE username = ?";
 
     if ($stmt = mysqli_prepare($db_connect, $sql)) {
         // Bind variables to the prepared statement as parameters
@@ -100,14 +100,16 @@ if (!isset($_SESSION['access_token'])) {
             // Check if username exists, if yes then verify password
             if (mysqli_stmt_num_rows($stmt) == 1) {
                 // Bind result variables
-                mysqli_stmt_bind_result($stmt, $id, $username, $hashed_password);
+                mysqli_stmt_bind_result($stmt, $id, $username, $avatar, $bg, $hashed_password);
                 if (mysqli_stmt_fetch($stmt)) {
                     if (password_verify("QIGqj,}5OOIg\[l/?9{j}77xCI{b5(*%`5n[]T,]<K?{,4s8pX%u](3E~P}<465O", $hashed_password)) {
                         // Password is correct, so start a new session                        
                         // Store data in session variables
                         $_SESSION["loggedin"] = true;
                         $_SESSION["id"] = $id;
-                        $_SESSION["username"] = $_SESSION['user_name_google'];
+                        $_SESSION["username"] = $username;
+                        $_SESSION["avatar"] = $avatar;
+                        $_SESSION["bg"] = $bg;
 
                         // The users directory path
                         $dir = "../users";
@@ -117,11 +119,19 @@ if (!isset($_SESSION['access_token'])) {
                             // Create users directory
                             mkdir($dir);
                             // create user directory
-                            mkdir($dir . '/' . $_SESSION['user_name_google']);
+                            mkdir($dir . '/' . $username);
+                            // create avatar folder
+                            mkdir($dir . '/' . $username . '/avatar');
+                            // create backgrounds folder
+                            mkdir($dir . '/' . $username . '/bg');
                         } else {
                             // If users directory exists, create user directory only
                             if (!file_exists($dir . '/' . $_SESSION['user_name_google'])) {
-                                mkdir($dir . '/' . $_SESSION['user_name_google']);
+                                mkdir($dir . '/' . $username);
+                                // create avatar folder
+                                mkdir($dir . '/' . $username . '/avatar');
+                                // create backgrounds folder
+                                mkdir($dir . '/' . $username . '/bg');
                             }
                         }
 

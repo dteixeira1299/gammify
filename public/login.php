@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Validate credentials
     if (empty($username_err) && empty($password_err)) {
         // Prepare a select statement
-        $sql = "SELECT id, username, password FROM users WHERE username = ? AND deleted_at IS NULL";
+        $sql = "SELECT id, username, avatar, bg, password FROM users WHERE username = ? AND deleted_at IS NULL";
 
         if ($stmt = mysqli_prepare($db_connect, $sql)) {
             // Bind variables to the prepared statement as parameters
@@ -52,7 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Check if username exists, if yes then verify password
                 if (mysqli_stmt_num_rows($stmt) == 1) {
                     // Bind result variables
-                    mysqli_stmt_bind_result($stmt, $id, $username, $hashed_password);
+                    mysqli_stmt_bind_result($stmt, $id, $username, $avatar, $bg, $hashed_password);
                     if (mysqli_stmt_fetch($stmt)) {
                         if (password_verify($password, $hashed_password)) {
                             // Password is correct, so start a new session
@@ -60,6 +60,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             $_SESSION["loggedin"] = true;
                             $_SESSION["id"] = $id;
                             $_SESSION["username"] = $username;
+                            $_SESSION["avatar"] = $avatar;
+                            $_SESSION["bg"] = $bg;
 
                             // The users directory path
                             $dir = "../users";
@@ -70,10 +72,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 mkdir($dir);
                                 // create user directory
                                 mkdir($dir . '/' . $username);
+                                // create avatar folder
+                                mkdir($dir . '/' . $username . '/avatar');
+                                // create backgrounds folder
+                                mkdir($dir . '/' . $username . '/bg');
                             } else {
                                 // If users directory exists, create user directory only
                                 if (!file_exists($dir . '/' . $username)) {
                                     mkdir($dir . '/' . $username);
+                                    // create avatar folder
+                                    mkdir($dir . '/' . $username . '/avatar');
+                                    // create backgrounds folder
+                                    mkdir($dir . '/' . $username . '/bg');
                                 }
                             }
 

@@ -15,7 +15,7 @@ $user_id = $_SESSION["id"];
 
 $users = [];
 
-$sql = "SELECT id,username FROM users WHERE NOW() - last_login <= 10 AND id != $user_id";
+$sql = "SELECT id,username,avatar FROM users WHERE NOW() - last_login <= 10 AND id != $user_id";
 $result = $db_connect->query($sql);
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {

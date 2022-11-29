@@ -61,10 +61,10 @@ include '../config.php';
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <img src="https://mdbootstrap.com/img/Photos/Avatars/img%20(2).jpg" class="rounded-circle img-fluid" height='25' width='25'> Howdy, <?= $_SESSION['username'] ?>!
+              <img src="<?= $_SESSION['avatar'] == "" ? 'assets/images/default_avatar.png' : '../users/'.$_SESSION["username"].'/avatar/'.$_SESSION["avatar"]; ?>" class="rounded-circle" height='25' width='25'> Howdy, <?= $_SESSION['username'] ?>!
             </a>
             <ul class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="navbarDropdownMenuLink">
-              <li><a class="dropdown-item" href="#"><i class="fa-solid fa-gear"></i> Account Settings</a></li>
+              <li><a class="dropdown-item" href="account_settings.php"><i class="fa-solid fa-gear"></i> Account Settings</a></li>
               <?php
               // Check if the user isn't logged in by Google
               if (!isset($_SESSION["access_token"])) {
@@ -101,7 +101,6 @@ include '../config.php';
       </div>
   </div>
 
-
   <script>
     function getOnlineUsers() {
       var e = document.getElementById("table-online-users");
@@ -118,7 +117,15 @@ include '../config.php';
             for (i = 0; i < myArr.length; i++) {
               var tr = document.createElement("tr");
               var td = document.createElement("td");
-              td.innerHTML = '<i class="fa-solid fa-circle text-success"></i> ' + myArr[i].username;
+              var img = document.createElement("img")
+              img.src= myArr[i].avatar == null ? "assets/images/default_avatar.png" : "../users/"+myArr[i].username+"/avatar/"+myArr[i].avatar
+              img.height="25"
+              img.width="25"
+              img.className="rounded-circle"
+              td.appendChild(img)
+              var span = document.createElement("span")
+              span.innerHTML = ' <i class="fa-solid fa-circle text-success"></i> ' + myArr[i].username;
+              td.appendChild(span)
               tr.appendChild(td);
               e.appendChild(tr);
             }
