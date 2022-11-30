@@ -32,7 +32,7 @@ include '../config.php';
   <!-- fontawesome -->
   <link rel="stylesheet" href="assets/fontawesome/all.min.css">
   <style>
-   
+
 
   </style>
 </head>
@@ -49,7 +49,9 @@ include '../config.php';
       <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link <?php if ($game == "tick-tack-toe") {echo "active";} ?>" href="?game=tick-tack-toe">Tick-Tack-Toe</a>
+            <a class="nav-link <?php if ($game == "tick-tack-toe") {
+                                  echo "active";
+                                } ?>" href="?game=tick-tack-toe">Tick-Tack-Toe</a>
           </li>
           <li class="nav-item">
             <a class="nav-link disabled" href="#">Game 2</a>
@@ -61,7 +63,7 @@ include '../config.php';
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <img src="<?= $_SESSION['avatar'] == "" ? 'assets/images/default_avatar.png' : '../users/'.$_SESSION["username"].'/avatar/'.$_SESSION["avatar"]; ?>" class="rounded-circle" height='25' width='25'> Howdy, <?= $_SESSION['username'] ?>!
+              <img src="<?= $_SESSION['avatar'] == "" ? 'assets/images/default_avatar.png' : '../users/' . $_SESSION["username"] . '/avatar/' . $_SESSION["avatar"]; ?>" class="rounded-circle" height='25' width='25'> Howdy, <?= $_SESSION['username'] ?>!
             </a>
             <ul class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="navbarDropdownMenuLink">
               <li><a class="dropdown-item" href="account_settings.php"><i class="fa-solid fa-gear"></i> Account Settings</a></li>
@@ -83,9 +85,11 @@ include '../config.php';
 
 
   <div class="container ">
-      <div class="row full-height">
+    <div class="row full-height">
       <div class="col-sm-9 col-12 border border-light border-1 pt-sm-2 pt-1 pb-sm-2 pb-1">
-        <embed class="w-100 h-100" type="text/html" src="<?php if (isset($_GET['game'])) {echo "../games/" . $game;} ?>">
+        <embed class="w-100 h-100" type="text/html" src="<?php if (isset($_GET['game'])) {
+                                                            echo "../games/" . $game;
+                                                          } ?>">
       </div>
       <div class="col-sm-3 col-12 border border-light border-1 pt-sm-2 pt-1 pb-sm-2 pb-1">
         <table class="table table-borderless">
@@ -98,10 +102,14 @@ include '../config.php';
           </tbody>
         </table>
       </div>
-      </div>
+    </div>
   </div>
 
   <script>
+    document.body.style.backgroundImage = "url('../users/<?= $_SESSION["username"] ?>/bg/<?= $_SESSION["bg"] ?>')"
+    document.body.style.backgroundRepeat="no-repeat"
+    document.body.style.backgroundSize="cover"
+
     function getOnlineUsers() {
       var e = document.getElementById("table-online-users");
       e.innerHTML = "";
@@ -117,17 +125,34 @@ include '../config.php';
             for (i = 0; i < myArr.length; i++) {
               var tr = document.createElement("tr");
               var td = document.createElement("td");
-              var img = document.createElement("img")
-              img.src= myArr[i].avatar == null ? "assets/images/default_avatar.png" : "../users/"+myArr[i].username+"/avatar/"+myArr[i].avatar
-              img.height="25"
-              img.width="25"
-              img.className="rounded-circle"
-              td.appendChild(img)
-              var span = document.createElement("span")
-              span.innerHTML = ' <i class="fa-solid fa-circle text-success"></i> ' + myArr[i].username;
-              td.appendChild(span)
-              tr.appendChild(td);
+              var avatar = document.createElement("div");
+              avatar.style.width = "40px"
+              avatar.style.height = "40px"
+              avatar.style.border = "3px rgb(48, 69, 96) solid"
+              avatar.style.borderRadius = "20px"
+              avatar.style.position = "relative"
+              avatar.style.backgroundImage = myArr[i].avatar == "" || myArr[i].avatar == null ? "url(assets/images/default_avatar.png)" : "url(../users/" + myArr[i].username + "/avatar/" + myArr[i].avatar + ')'
+              avatar.style.backgroundSize = "cover"
+              avatar.style.backgroundPosition = "center"
+              var status = document.createElement("span");
+              status.style.width = "15px"
+              status.style.height = "15px"
+              status.style.border = "2px solid rgb(48, 69, 96)"
+              status.style.borderRadius = "50%"
+              status.style.position = "absolute"
+              status.style.left = "-10px"
+              status.style.bottom = "-10px"
+              status.style.transform = "translate(40%, -40%)"
+              status.style.backgroundColor = "rgb(48, 249, 75)"
+              avatar.appendChild(status)
+              var name = document.createElement("span");
+              name.innerHTML = myArr[i].username;
+              name.className = "ms-5"
+              avatar.appendChild(name)
+              td.appendChild(avatar)
+              tr.appendChild(td)
               e.appendChild(tr);
+
             }
           } else {
             var tr = document.createElement("tr");

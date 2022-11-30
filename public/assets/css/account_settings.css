@@ -4,6 +4,7 @@ body {
 
 .wrapper {
     margin-top: 100px;
+    margin-bottom: 100px;
 }
 
 #drop_file_zone {

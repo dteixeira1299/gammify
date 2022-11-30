@@ -20,64 +20,6 @@ $bgUser = scandir($dir_bg);
 
 // Sort in descending order
 // $b = scandir($dir,1);
-
-// // Define variables and initialize with empty values
-// $new_password = $confirm_password = "";
-// $new_password_err = $confirm_password_err = "";
-
-// // Processing form data when form is submitted
-// if($_SERVER["REQUEST_METHOD"] == "POST"){
-
-//     // Validate new password
-//     if(empty(trim($_POST["new_password"]))){
-//         $new_password_err = "Please enter the new password.";     
-//     } elseif(strlen(trim($_POST["new_password"])) < 6){
-//         $new_password_err = "Password must have atleast 6 characters.";
-//     } else{
-//         $new_password = trim($_POST["new_password"]);
-//     }
-
-//     // Validate confirm password
-//     if(empty(trim($_POST["confirm_password"]))){
-//         $confirm_password_err = "Please confirm the password.";
-//     } else{
-//         $confirm_password = trim($_POST["confirm_password"]);
-//         if(empty($new_password_err) && ($new_password != $confirm_password)){
-//             $confirm_password_err = "Password did not match.";
-//         }
-//     }
-
-//     // Check input errors before updating the database
-//     if(empty($new_password_err) && empty($confirm_password_err)){
-//         // Prepare an update statement
-//         $sql = "UPDATE users SET password = ?, updated_at = NOW() WHERE id = ?";
-
-//         if($stmt = mysqli_prepare($db_connect, $sql)){
-//             // Bind variables to the prepared statement as parameters
-//             mysqli_stmt_bind_param($stmt, "si", $param_password, $param_id);
-
-//             // Set parameters
-//             $param_password = password_hash($new_password, PASSWORD_DEFAULT);
-//             $param_id = $_SESSION["id"];
-
-//             // Attempt to execute the prepared statement
-//             if(mysqli_stmt_execute($stmt)){
-//                 // Password updated successfully. Destroy the session, and redirect to login page
-//                 session_destroy();
-//                 header("location: login.php");
-//                 exit();
-//             } else{
-//                 echo "Oops! Something went wrong. Please try again later.";
-//             }
-
-//             // Close statement
-//             mysqli_stmt_close($stmt);
-//         }
-//     }
-
-//     // Close connection
-//     mysqli_close($db_connect);
-// }
 ?>
 
 <!DOCTYPE html>
@@ -132,6 +74,7 @@ $bgUser = scandir($dir_bg);
     <div class="wrapper container">
         <h2>Account Settings</h2>
         <h3>Your avatars</h3>
+        <button onclick="rm_curr_avatar()" class="btn btn-primary btn-sm mb-3">Remove current avatar</button>
 
         <div class="text-center">
             <div class="row">
@@ -144,7 +87,7 @@ $bgUser = scandir($dir_bg);
                             <img src="<?= '../users/' . $_SESSION['username'] . '/avatar/' . $value ?>" id="avatarPreview" width="100" height="100" onclick="save_avatar(this.attributes[0].value);">
                         </div>
 
-                    <?php
+                <?php
                     }
                 }
                 ?>
@@ -163,6 +106,8 @@ $bgUser = scandir($dir_bg);
         <hr>
         <h3>Your backgrounds</h3>
 
+        <button onclick="rm_curr_bg()" class="btn btn-primary btn-sm mb-3">Remove current background</button>
+
         <div class="text-center">
             <div class="row">
 
@@ -174,7 +119,7 @@ $bgUser = scandir($dir_bg);
                             <img src="<?= '../users/' . $_SESSION['username'] . '/bg/' . $value ?>" id="bgPreview" width="100" height="100" onclick="save_bg(this.attributes[0].value);">
                         </div>
 
-                    <?php
+                <?php
                     }
                 }
                 ?>
@@ -193,6 +138,40 @@ $bgUser = scandir($dir_bg);
 
     </div>
     <script>
+        document.body.style.backgroundImage = "url('../users/<?= $_SESSION["username"] ?>/bg/<?= $_SESSION["bg"] ?>')"
+        document.body.style.backgroundRepeat = "no-repeat"
+        document.body.style.backgroundSize = "cover"
+
+        function rm_curr_avatar() {
+
+            var xmlhttp = new XMLHttpRequest();
+            var url = "../update_avatar_user.php?avatar=";
+
+            xmlhttp.open("GET", url);
+            xmlhttp.send();
+            location.reload();
+        }
+
+        function rm_curr_bg() {
+
+            var xmlhttp = new XMLHttpRequest();
+            var url = "../update_bg_user.php?bg=";
+
+            xmlhttp.open("GET", url);
+            xmlhttp.send();
+            location.reload();
+        }
+
+        function updateLoginCurrentUser() {
+            const xhttp = new XMLHttpRequest();
+            xhttp.open("GET", "../update_user_login.php");
+            xhttp.send();
+
+            setTimeout(updateLoginCurrentUser, 10000);
+        }
+
+        updateLoginCurrentUser();
+
         var fileobj;
 
         function upload_avatar(e) {
@@ -285,7 +264,6 @@ $bgUser = scandir($dir_bg);
             xmlhttp.send();
             location.reload();
         }
-
     </script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
 </body>
