@@ -116,24 +116,25 @@ body{
 
 
 
-#new-game, .okay-button, .new-game-key {
+#new-game, .okay-button, .new-game-key, .reload-frame {
     padding: 10px 20px;
     color: white;
     background-color: orangered;
     border: none;
+    min-width: 50%;
     /* border: 2px yellow solid;
     border-radius: 4px; */
     margin: 40px 0;
     transition: all 200ms ease-in-out;
 }
 
-#new-game:hover, .okay-button:hover, .new-game-key:hover{
+#new-game:hover, .okay-button:hover, .new-game-key:hover, .reload-frame:hover{
     transform: scale(1.15, 1.15);
     background-color: red;
     cursor: pointer;
 }
 
-#new-game:active, .okay-button:active, .new-game-key:active {
+#new-game:active, .okay-button:active, .new-game-key:active, .reload-frame:active {
     transition: none;
     background-color: maroon;
 

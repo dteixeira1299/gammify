@@ -2,6 +2,8 @@ sessionStorage.clear();
 
 document.querySelector(".turn-indicator").style.display = "none"
 
+document.getElementById("reload-frame").style.display = "none"
+
 var currentPlayer = "";
 
 var checkedBoxes = [];
@@ -11,6 +13,10 @@ var turnCount = 0;
 var gameMode = '';
 
 var alert_no_player_o = false;
+
+var result_game = false;
+
+var notif_room_closed = false
 
 function getUserIdSessionPHP() {
 
@@ -31,6 +37,12 @@ getUserIdSessionPHP()
 
 
 function createNewGameDB() {
+    gameMode = "PvP"
+    document.getElementById("reload-frame").style.display = "inline"
+    document.getElementById("new-game-key").style.display = "none"
+    document.querySelector(`.mode.PvC`).classList.remove('mode-selected');
+    document.querySelector(`.mode.PvP`).classList.add('mode-selected');
+    document.querySelector(`.mode.PvC`).style.display = "none"
 
     var xmlhttp = new XMLHttpRequest();
     var url = "create_new_game.php";
@@ -45,11 +57,10 @@ function createNewGameDB() {
     xmlhttp.open("GET", url, true);
     xmlhttp.send();
 
-    gameMode = "PvP";
+}
 
-    document.getElementById("new-game-key").textContent = "Exit Game"
-    document.getElementById("new-game-key").setAttribute('onclick', 'exitGame(sessionStorage.getItem("GAME_KEY"))')
-
+function reloadFrame() {
+    location.reload();
 }
 
 function exitGame(x) {
@@ -61,20 +72,11 @@ function exitGame(x) {
 
     location.reload();
 
-    // document.getElementById("current-key-game").textContent = ""
+    if (notif_room_closed === false) {
+        alert("Players not connected. Room is closed. See you soon in another room. :)")
+        notif_room_closed = true
+    }
 
-    // sessionStorage.removeItem("GAME_KEY")
-    // sessionStorage.removeItem("PLAYER_X_ID")
-    // sessionStorage.removeItem("PLAYER_O_ID")
-    // sessionStorage.removeItem("PLAYER_O_ID")
-    // sessionStorage.removeItem("PLAYER_X_USERNAME")
-    // sessionStorage.removeItem("PLAYER_O_USERNAME")
-    // currentPlayer=""
-    // clearBoard();
-    // alert_no_player_o = false
-
-    // document.getElementById("new-game-key").textContent="New Game"
-    // document.getElementById("new-game-key").setAttribute('onclick','createNewGameDB()')
 }
 
 
@@ -98,7 +100,7 @@ function getGameDB(x) {
                 sessionStorage.setItem("PLAYER_X_USERNAME", myArr[0].player_x_username)
                 sessionStorage.setItem("PLAYER_O_USERNAME", myArr[0].player_o_username)
 
-                if (sessionStorage.getItem("PLAYER_O_ID") == "null" && (sessionStorage.getItem("PLAYER_X_ID") != sessionStorage.getItem("LOGGED_USER_ID"))) {
+                if (sessionStorage.getItem("PLAYER_O_ID") == "null" && (sessionStorage.getItem("PLAYER_X_ID") != sessionStorage.getItem("LOGGED_USER_ID")) && gameMode == "PvP") {
                     update_player_o(sessionStorage.getItem("GAME_KEY"))
                 }
 
@@ -149,13 +151,24 @@ function start() {
             setTimeout(hideLoader, 500);
             get_move_player()
             check_block_player()
-            player_disconnect()
+            gameIsActive()
 
         }
     }
 
 
 }
+
+function gameIsActive() {
+    var xmlhttp = new XMLHttpRequest();
+    var url = "game_is_active.php?game_key=" + sessionStorage.getItem("GAME_KEY") + "&plX=" + sessionStorage.getItem("PLAYER_X_ID") + "&plO=" + sessionStorage.getItem("PLAYER_O_ID") + "&crrUser=" + sessionStorage.getItem("LOGGED_USER_ID");
+
+    xmlhttp.open("GET", url);
+    xmlhttp.send();
+
+    setTimeout(gameIsActive, 10000);
+  }
+
 
 function player_disconnect() {
 
@@ -168,12 +181,14 @@ function player_disconnect() {
             var i;
             if (myArr.length != 0) {
                 for (i = 0; i < myArr.length; i++) {
-                    if (myArr[i].id.includes(sessionStorage.getItem("PLAYER_X_ID")) || myArr[i].id.includes(sessionStorage.getItem("PLAYER_O_ID"))) {
+                    if (myArr[i].id.includes(sessionStorage.getItem("PLAYER_X_ID")) && myArr[i].id.includes(sessionStorage.getItem("PLAYER_O_ID"))) {
                         console.log("All users are connected!")
                     } else {
-                        alert('xau')
+                        exitGame(sessionStorage.getItem("GAME_KEY"))
                     }
                 }
+            } else {
+                exitGame(sessionStorage.getItem("GAME_KEY"))
             }
         }
     };
@@ -182,7 +197,7 @@ function player_disconnect() {
     xmlhttp.send();
 
     if (sessionStorage.getItem("GAME_KEY")) {
-        setTimeout(player_disconnect, 0);
+        setTimeout(player_disconnect, 10000);
     }
 }
 
@@ -257,21 +272,28 @@ function onGameModeChange(mode, _el) {
         document.querySelector(".turn-indicator").style.display = "none"
         document.querySelector(`.mode.PvC`).classList.remove('mode-selected');
         document.getElementById("search-game").style.display = "inline"
+        document.querySelector(`.mode.PvC`).style.display = "none"
+        document.getElementById("reload-frame").style.display = "inline"
+        document.getElementById("new-game-key").style.display = "none"
         getUserIdSessionPHP()
         currentPlayer = ""
 
     }
     else if (mode == 'PvC') {
+        sessionStorage.clear();
         document.querySelector(".turn-indicator").style.display = "inline"
         document.querySelector(`.mode.PvP`).classList.remove('mode-selected');
         document.getElementById("input-game-key").value = ""
         document.getElementById("search-game").style.display = "none"
-        sessionStorage.clear();
         document.getElementById("current-key-game").textContent = ""
+        document.querySelector(`.mode.PvP`).style.display = "none"
+        document.getElementById("reload-frame").style.display = "inline"
+        document.getElementById("new-game-key").style.display = "none"
         currentPlayer = "X";
         document.querySelector('.current-player').textContent = "X";
         document.getElementById("score-X-username").textContent = "X"
         document.getElementById("score-O-username").textContent = "O"
+
     }
     gameMode = mode;
     clearBoard();
@@ -286,8 +308,20 @@ function send_move_player(move_element_id, move_currentPlayer, game_key) {
     xmlhttp.open("GET", url);
     xmlhttp.send();
 }
-
 function get_move_player() {
+    if (result_game == true) {
+        if (sessionStorage.getItem("GAME_KEY") && gameMode == "PvP" && currentPlayer=="O" && (sessionStorage.getItem("LOGGED_USER_ID") == sessionStorage.getItem("PLAYER_O_ID"))) {
+            send_move_player("NULL", "NULL", sessionStorage.getItem("GAME_KEY"))
+            sessionStorage.removeItem("MOVE_CURRENT_PLAYER")
+            sessionStorage.removeItem("MOVE_ELEMENT_ID")
+            result_game=false
+        } else if(sessionStorage.getItem("GAME_KEY") && gameMode == "PvP" && currentPlayer=="X" && (sessionStorage.getItem("LOGGED_USER_ID") == sessionStorage.getItem("PLAYER_X_ID"))){
+            send_move_player("NULL", "NULL", sessionStorage.getItem("GAME_KEY"))
+            sessionStorage.removeItem("MOVE_CURRENT_PLAYER")
+            sessionStorage.removeItem("MOVE_ELEMENT_ID")
+            result_game=false
+        }
+    }
     var xmlhttp = new XMLHttpRequest();
     var url = "get_move_player.php?game_key=" + sessionStorage.getItem("GAME_KEY");
 
@@ -452,11 +486,8 @@ function clearBoard() {
 }
 
 function showWinner(noWinner = false) {
-    if (sessionStorage.getItem("GAME_KEY") && gameMode == "PvP") {
-        send_move_player("NULL", "NULL", sessionStorage.getItem("GAME_KEY"))
-        sessionStorage.removeItem("MOVE_CURRENT_PLAYER")
-        sessionStorage.removeItem("MOVE_ELEMENT_ID")
-    }
+
+    result_game = true
 
     if (noWinner) {
         document.querySelector('.winner-screen .body').innerHTML = 'Its a Draw!';
