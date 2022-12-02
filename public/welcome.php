@@ -128,7 +128,6 @@ include '../config.php';
         if (this.readyState == 4 && this.status == 200) {
           var myArr = JSON.parse(this.responseText);
           var i;
-          console.log(this.responseText)
           if (myArr.length != 0) {
             for (i = 0; i < myArr.length; i++) {
               var tr = document.createElement("tr");
