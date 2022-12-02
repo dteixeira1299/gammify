@@ -31,10 +31,6 @@ include '../config.php';
   <link rel="stylesheet" href="assets/css/app.css">
   <!-- fontawesome -->
   <link rel="stylesheet" href="assets/fontawesome/all.min.css">
-  <style>
-
-
-  </style>
 </head>
 
 <body>
@@ -101,6 +97,15 @@ include '../config.php';
           <tbody id="table-online-users">
           </tbody>
         </table>
+        <table class="table table-borderless">
+          <thead>
+            <tr>
+              <th>Tick-Tack-Toe rooms:</th>
+            </tr>
+          </thead>
+          <tbody id="table-ticktacktoe-rooms">
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -109,6 +114,47 @@ include '../config.php';
     document.body.style.backgroundImage = "url('../users/<?= $_SESSION["username"] ?>/bg/<?= $_SESSION["bg"] ?>')"
     document.body.style.backgroundRepeat="no-repeat"
     document.body.style.backgroundSize="cover"
+
+    getTickTackToeRooms()
+
+    function getTickTackToeRooms() {
+      var e = document.getElementById("table-ticktacktoe-rooms");
+      e.innerHTML = "";
+
+      var xmlhttp = new XMLHttpRequest();
+      var url = "../get_tick_tack_toe_rooms.php";
+
+      xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          var myArr = JSON.parse(this.responseText);
+          var i;
+          console.log(this.responseText)
+          if (myArr.length != 0) {
+            for (i = 0; i < myArr.length; i++) {
+              var tr = document.createElement("tr");
+              var td = document.createElement("td");
+              var name = document.createElement("span");
+              name.innerHTML = '<i class="fa-solid fa-circle text-success"></i> ' + myArr[i].game_key;
+              td.appendChild(name)
+              tr.appendChild(td)
+              e.appendChild(tr);
+
+            }
+          } else {
+            var tr = document.createElement("tr");
+            var td = document.createElement("td");
+            td.innerHTML = 'No rooms available!';
+            tr.appendChild(td);
+            e.appendChild(tr);
+          }
+        }
+      };
+
+      xmlhttp.open("GET", url, true);
+      xmlhttp.send();
+
+      setTimeout(getTickTackToeRooms, 10000);
+    }
 
     function getOnlineUsers() {
       var e = document.getElementById("table-online-users");

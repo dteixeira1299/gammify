@@ -77,7 +77,7 @@ $bgUser = scandir($dir_bg);
         <button onclick="rm_curr_avatar()" class="btn btn-primary btn-sm mb-3">Remove current avatar</button>
 
         <div class="text-center">
-            <div class="row">
+            <div class="row border p-2">
 
                 <?php
                 foreach ($avatarsUser as $key => $value) {
@@ -109,7 +109,7 @@ $bgUser = scandir($dir_bg);
         <button onclick="rm_curr_bg()" class="btn btn-primary btn-sm mb-3">Remove current background</button>
 
         <div class="text-center">
-            <div class="row">
+            <div class="row border p-2">
 
                 <?php
                 foreach ($bgUser as $key => $value) {
@@ -136,12 +136,31 @@ $bgUser = scandir($dir_bg);
             <div class="img-content-2"></div>
         </div>
 
+        <?php
+        // Check if the user isn't logged in by Google
+        if (!isset($_SESSION["access_token"])) {
+        ?>
+            <button class="btn btn-danger mt-5" onclick="confirm_delete_user()"><i class="fa-solid fa-trash"></i> Delete account</button>
+        <?php
+        }
+        ?>
+
     </div>
     <script>
-        document.body.style.backgroundImage = "url('../users/<?= $_SESSION["username"] ?>/bg/<?= $_SESSION["bg"] ?>')"
-        document.body.style.backgroundRepeat = "no-repeat"
-        document.body.style.backgroundSize = "cover"
+        function confirm_delete_user(){
+            var result = confirm("<?= $_SESSION["username"] ?> will be deleted. Are you sure?");
+            if (result == true) {
+                delete_user()
+            }
+        }
+        function delete_user(){
+            var xmlhttp = new XMLHttpRequest();
+            var url = "../delete_user.php";
 
+            xmlhttp.open("GET", url);
+            xmlhttp.send();
+            window.location.href = "logout.php";
+        }
         function rm_curr_avatar() {
 
             var xmlhttp = new XMLHttpRequest();
@@ -149,6 +168,7 @@ $bgUser = scandir($dir_bg);
 
             xmlhttp.open("GET", url);
             xmlhttp.send();
+            alert("Avatar successfully removed!")
             location.reload();
         }
 
@@ -159,6 +179,7 @@ $bgUser = scandir($dir_bg);
 
             xmlhttp.open("GET", url);
             xmlhttp.send();
+            alert("Background successfully removed!")
             location.reload();
         }
 
@@ -193,7 +214,7 @@ $bgUser = scandir($dir_bg);
                 var form_data = new FormData();
                 form_data.append('file', file_obj);
                 var xhttp = new XMLHttpRequest();
-                xhttp.open("POST", "ajax_user_avatar.php", true);
+                xhttp.open("POST", "../ajax_user_avatar.php", true);
                 xhttp.onload = function(event) {
                     oOutput = document.querySelector('.img-content');
                     if (xhttp.status == 200) {
@@ -216,6 +237,7 @@ $bgUser = scandir($dir_bg);
 
             xmlhttp.open("GET", url);
             xmlhttp.send();
+            alert("Avatar successfully applied!")
             location.reload();
         }
 
@@ -239,7 +261,7 @@ $bgUser = scandir($dir_bg);
                 var form_data = new FormData();
                 form_data.append('file', file_obj);
                 var xhttp = new XMLHttpRequest();
-                xhttp.open("POST", "ajax_user_bg.php", true);
+                xhttp.open("POST", "../ajax_user_bg.php", true);
                 xhttp.onload = function(event) {
                     oOutput = document.querySelector('.img-content-2');
                     if (xhttp.status == 200) {
@@ -262,6 +284,7 @@ $bgUser = scandir($dir_bg);
 
             xmlhttp.open("GET", url);
             xmlhttp.send();
+            alert("Background successfully applied!")
             location.reload();
         }
     </script>

@@ -11,7 +11,7 @@ if (!(in_array($_FILES['file']['type'], $arr_file_types))) {
   
 $filename = time().'_'.$_FILES['file']['name'];
   
-move_uploaded_file($_FILES['file']['tmp_name'], '../users/'.$_SESSION['username'].'/bg/'.$filename);
+move_uploaded_file($_FILES['file']['tmp_name'], 'users/'.$_SESSION['username'].'/bg/'.$filename);
   
-echo '../users/'.$_SESSION['username'].'/bg/'.$filename;
+echo 'users/'.$_SESSION['username'].'/bg/'.$filename;
 die;

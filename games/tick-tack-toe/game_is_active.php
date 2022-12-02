@@ -9,15 +9,13 @@ $crrUser = $_GET["crrUser"];
 include '../../config.php';
 
 if($crrUser == $plX){
-    $db_connect->query("UPDATE ticktacktoe SET active_x = NOW() WHERE game_key = $game_key");
+    $db_connect->query("UPDATE ticktacktoe SET active_x = NOW() WHERE game_key = '$game_key'");
     mysqli_close($db_connect);
 }
 
 if($crrUser == $plO){
-    $db_connect->query("UPDATE ticktacktoe SET active_o = NOW() WHERE game_key = $game_key");
+    $db_connect->query("UPDATE ticktacktoe SET active_o = NOW() WHERE game_key = '$game_key'");
     mysqli_close($db_connect);
 }
-
-echo "ok";
 
 

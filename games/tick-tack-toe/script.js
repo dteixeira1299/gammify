@@ -127,6 +127,7 @@ function start() {
         if (alert_no_player_o === false && (sessionStorage.getItem("PLAYER_X_ID") == sessionStorage.getItem("LOGGED_USER_ID"))) {
             alert("Please wait for second player....")
             alert_no_player_o = true
+            gameIsActive()
         }
         getGameDB(sessionStorage.getItem("GAME_KEY"))
     } else {
@@ -166,28 +167,22 @@ function gameIsActive() {
     xmlhttp.open("GET", url);
     xmlhttp.send();
 
+    if (sessionStorage.getItem("PLAYER_O_ID") != "null") {
+        check_active_players()
+    }
+
     setTimeout(gameIsActive, 10000);
   }
 
 
-function player_disconnect() {
+function check_active_players() {
 
     var xmlhttp = new XMLHttpRequest();
-    var url = "../../get_all_online_users.php";
+    var url = "check_active_players.php?game_key=" + sessionStorage.getItem("GAME_KEY");
 
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-            var myArr = JSON.parse(this.responseText);
-            var i;
-            if (myArr.length != 0) {
-                for (i = 0; i < myArr.length; i++) {
-                    if (myArr[i].id.includes(sessionStorage.getItem("PLAYER_X_ID")) && myArr[i].id.includes(sessionStorage.getItem("PLAYER_O_ID"))) {
-                        console.log("All users are connected!")
-                    } else {
-                        exitGame(sessionStorage.getItem("GAME_KEY"))
-                    }
-                }
-            } else {
+            if (this.responseText != "active"){
                 exitGame(sessionStorage.getItem("GAME_KEY"))
             }
         }
@@ -195,10 +190,6 @@ function player_disconnect() {
 
     xmlhttp.open("GET", url, true);
     xmlhttp.send();
-
-    if (sessionStorage.getItem("GAME_KEY")) {
-        setTimeout(player_disconnect, 10000);
-    }
 }
 
 function check_block_player() {
