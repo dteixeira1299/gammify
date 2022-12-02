@@ -34,9 +34,7 @@ CREATE TABLE IF NOT EXISTS `ticktacktoe` (
   `active_o` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `player_x_id` (`player_x_id`),
-  KEY `player_o_id` (`player_o_id`),
-  CONSTRAINT `FK_ticktacktoe_users` FOREIGN KEY (`player_x_id`) REFERENCES `users` (`id`),
-  CONSTRAINT `FK_ticktacktoe_users_2` FOREIGN KEY (`player_o_id`) REFERENCES `users` (`id`)
+  KEY `player_o_id` (`player_o_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Dumping data for table gammify.ticktacktoe: ~0 rows (approximately)
