@@ -7,9 +7,7 @@ session_start();
 
 $rooms = [];
 
-$user_id = $_SESSION["id"];
-
-$sql = "SELECT game_key FROM ticktacktoe WHERE deleted_at IS NULL AND (ticktacktoe.player_o_id IS NULL OR (ticktacktoe.player_x_id = '$user_id' OR ticktacktoe.player_o_id = '$user_id'))";
+$sql = "SELECT game_key FROM ticktacktoe WHERE deleted_at IS NULL AND ticktacktoe.player_o_id IS NULL";
 $result = $db_connect->query($sql);
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
