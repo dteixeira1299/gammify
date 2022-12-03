@@ -133,7 +133,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     <style>
         body{ font: 14px sans-serif; }
-        .wrapper{ width: 500px; margin-left: auto; margin-right: auto; margin-top: 100px; padding: 20px; border: 1px solid white;}
+        .wrapper{ max-width: 500px; margin-left: auto; margin-right: auto; margin-top: 100px; padding: 20px; border: 1px solid white;}
     </style>
 </head>
 <body>

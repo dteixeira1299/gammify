@@ -128,7 +128,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         .wrapper {
-            width: 500px;
+            max-width: 500px;
             margin-left: auto;
             margin-right: auto;
             margin-top: 100px;
