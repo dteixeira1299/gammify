@@ -114,25 +114,24 @@ if (!isset($_SESSION['access_token'])) {
                         // The users directory path
                         $dir = "../users";
 
-                        // Check the existence of users directory
                         if (!file_exists($dir)) {
                             // Create users directory
                             mkdir($dir);
+                        }
+
+                        if (!file_exists($dir . '/' . $username)) {
                             // create user directory
                             mkdir($dir . '/' . $username);
-                            // create avatar folder
+                        }
+
+                        if (!file_exists($dir . '/' . $username . '/avatar')) {
+                            // create avatar user directory
                             mkdir($dir . '/' . $username . '/avatar');
-                            // create backgrounds folder
+                        }
+
+                        if (!file_exists($dir . '/' . $username . '/bg')) {
+                            // create bg user directory
                             mkdir($dir . '/' . $username . '/bg');
-                        } else {
-                            // If users directory exists, create user directory only
-                            if (!file_exists($dir . '/' . $_SESSION['user_name_google'])) {
-                                mkdir($dir . '/' . $username);
-                                // create avatar folder
-                                mkdir($dir . '/' . $username . '/avatar');
-                                // create backgrounds folder
-                                mkdir($dir . '/' . $username . '/bg');
-                            }
                         }
 
                         // Redirect user to welcome page
@@ -160,23 +159,6 @@ if (!isset($_SESSION['access_token'])) {
 
                     // Attempt to execute the prepared statement
                     if (mysqli_stmt_execute($stmt)) {
-
-                        // The users directory path
-                        $dir = "../users";
-
-                        // Check the existence of users directory
-                        if (!file_exists($dir)) {
-                            // Create users directory
-                            mkdir($dir);
-                            // create user directory
-                            mkdir($dir . '/' . $_SESSION['user_name_google']);
-                        } else {
-                            // If users directory exists, create user directory only
-                            if (!file_exists($dir . '/' . $_SESSION['user_name_google'])) {
-                                mkdir($dir . '/' . $_SESSION['user_name_google']);
-                            }
-                        }
-
                         //
                         header("Location:redirect.php");
                     } else {

@@ -66,29 +66,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             // The users directory path
                             $dir = "../users";
 
-                            // Check the existence of users directory
                             if (!file_exists($dir)) {
                                 // Create users directory
                                 mkdir($dir);
+                            }
+
+                            if (!file_exists($dir . '/' . $username)) {
                                 // create user directory
                                 mkdir($dir . '/' . $username);
-                                // create avatar folder
+                            }
+
+                            if (!file_exists($dir . '/' . $username . '/avatar')) {
+                                // create avatar user directory
                                 mkdir($dir . '/' . $username . '/avatar');
-                                // create backgrounds folder
+                            }
+
+                            if (!file_exists($dir . '/' . $username . '/bg')) {
+                                // create bg user directory
                                 mkdir($dir . '/' . $username . '/bg');
-                            } else {
-                                // If users directory exists, create user directory only
-                                if (!file_exists($dir . '/' . $username)) {
-                                    mkdir($dir . '/' . $username);
-                                    // create avatar folder
-                                    mkdir($dir . '/' . $username . '/avatar');
-                                    // create backgrounds folder
-                                    mkdir($dir . '/' . $username . '/bg');
-                                }
                             }
 
                             // Redirect user to welcome page
                             header("location: welcome.php");
+
                         } else {
                             // Password is not valid, display a generic error message
                             $login_err = "Invalid username or password.";

@@ -171,7 +171,7 @@ function gameIsActive() {
         check_active_players()
     }
 
-    setTimeout(gameIsActive, 10000);
+    setTimeout(gameIsActive, 50000);
   }
 
 
