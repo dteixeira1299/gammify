@@ -1,4 +1,4 @@
-*{
+* {
     margin: 0;
     padding: 0;
     border: 0;
@@ -9,7 +9,7 @@
     src: url(Lato-Light.ttf);
 }
 
-body{
+body {
     font-family: Lato, Arial, Helvetica, sans-serif;
 
     background-image: linear-gradient(rgba(62, 20, 20, 0.4), rgba(62, 20, 20, 0.4)), url(back.jpg);
@@ -17,7 +17,7 @@ body{
     background-position: center;
 }
 
-.welcome-text{
+.welcome-text {
     text-align: center;
     padding: 0px 20px 20px 20px;
     font-weight: 300;
@@ -25,27 +25,27 @@ body{
     color: white;
 }
 
-.filler{
+.filler {
     height: 20px;
 }
 
-.container{
+.container {
     margin: 10vh 20%;
     min-height: 80vh;
-    background-color: rgba(0,0,0,0.4);
+    background-color: rgba(0, 0, 0, 0.4);
     text-align: center;
 
     box-shadow: 0px 10px 50px rgba(0, 0, 0, 0.3);
 }
 
-.box{
+.box {
     display: inline-block;
     width: 150px;
     height: 140px;
     font-size: 140px;
     text-align: center;
     cursor: pointer;
-    border: 1px solid rgba(255, 80, 80,0.4);
+    border: 1px solid rgba(255, 80, 80, 0.4);
     margin: 0 -1.5px;
     transition: all 200ms ease-in-out;
     background-color: rgba(0, 0, 0, 0.3);
@@ -54,19 +54,19 @@ body{
 
 }
 
-.box:hover{
+.box:hover {
     background-color: lightgray;
 }
 
-.box[value=X]{
+.box[value=X] {
     color: red;
 }
 
 
 
-.box:disabled{
+.box:disabled {
     cursor: not-allowed;
-    background-color:rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.6);
 }
 
 
@@ -92,7 +92,7 @@ body{
     /* border: 2px darkgray solid;
     border-radius: 5px; */
     background-color: #daa520eb;
-    
+
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     transition-duration: 200ms;
     transition-timing-function: ease-in-out;
@@ -102,7 +102,7 @@ body{
     border: none;
 }
 
-.message-box .title{
+.message-box .title {
     background-color: rgba(0, 0, 0, 0.6);
     color: white;
     padding: 10px 0;
@@ -116,7 +116,10 @@ body{
 
 
 
-#new-game, .okay-button, .new-game-key, .reload-frame {
+#new-game,
+.okay-button,
+.new-game-key,
+.reload-frame {
     padding: 10px 20px;
     color: white;
     background-color: orangered;
@@ -128,13 +131,19 @@ body{
     transition: all 200ms ease-in-out;
 }
 
-#new-game:hover, .okay-button:hover, .new-game-key:hover, .reload-frame:hover{
+#new-game:hover,
+.okay-button:hover,
+.new-game-key:hover,
+.reload-frame:hover {
     transform: scale(1.15, 1.15);
     background-color: red;
     cursor: pointer;
 }
 
-#new-game:active, .okay-button:active, .new-game-key:active, .reload-frame:active {
+#new-game:active,
+.okay-button:active,
+.new-game-key:active,
+.reload-frame:active {
     transition: none;
     background-color: maroon;
 
@@ -152,14 +161,14 @@ body{
     bottom: 0;
     right: 0;
     text-align: center;
-    background-color: rgb(0,0,255,0.3);
+    background-color: rgb(0, 0, 255, 0.3);
     color: white;
-    z-index: 10 ;
+    z-index: 10;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3)
 }
 
-.score-header{
-    background-color: rgb(255,0,0,0.3);
+.score-header {
+    background-color: rgb(255, 0, 0, 0.3);
     color: white;
     padding: 15px;
     font-size: 20px;
@@ -171,7 +180,7 @@ body{
 }
 
 .player-scores.X {
-    background-color: rgb(0,255,0,0.3);
+    background-color: rgb(0, 255, 0, 0.3);
 }
 
 .player-scores.Y {
@@ -184,30 +193,30 @@ button {
     font-size: 20px;
 }
 
-.turn-indicator{
+.turn-indicator {
     font-size: 20px;
     color: white;
 }
 
-.fade-in{
+.fade-in {
     opacity: 1;
     visibility: visible;
     transition: opacity 200ms ease-in-out;
 }
 
-.fade-out{
+.fade-out {
     opacity: 0;
     visibility: hidden;
-    transition: visibility 0s 200ms, opacity 200ms ease-in-out  ;
+    transition: visibility 0s 200ms, opacity 200ms ease-in-out;
 }
 
 
-.mode-select{
+.mode-select {
     font-size: 16px;
     line-height: 40px;
 }
 
-.mode-select .mode{
+.mode-select .mode {
     margin: 10px;
     padding: 10px 20px;
     transition: background-color 200ms ease-in-out;
@@ -218,7 +227,7 @@ button {
 
 }
 
-.mode-select .mode.active{
+.mode-select .mode.active {
 
     border: 4px solid green;
 }
@@ -244,47 +253,50 @@ button {
 }
 
 
-@media screen and (max-width: 900px){
-    .box{
+@media screen and (max-width: 900px) {
+    .box {
         width: 30vw;
-        height: 29vw;
+        height: 32vw;
         transition: none;
     }
 
 
     .winner-screen .message-box {
         transform: scale(1.5, 1.5);
+        width: 50vw;
+        left: 25vw;
+        top: 25vh;
     }
 
-    #new-game{
+    #new-game {
         transform: scale(2, 2);
     }
 
-    #new-game:hover{
+    #new-game:hover {
         transform: scale(2.5, 2.5);
     }
 
-    .score{
+    .score {
         max-width: none;
         width: 100vw;
         font-size: 1rem;
     }
 
-    .score .score-header{
+    .score .score-header {
         font-size: 1rem;
     }
-    
+
 
     .turn-indicator {
         font-size: 1rem;
     }
 
-    .mode-select{
+    .mode-select {
         float: none;
         font-size: 1rem;
     }
 
-    .welcome-text{
+    .welcome-text {
         font-size: 2rem;
     }
 
@@ -302,7 +314,7 @@ button {
 
 /*  Loader   */
 
-.loader-overlay{
+.loader-overlay {
     display: none;
     position: fixed;
     left: 0;
@@ -324,72 +336,86 @@ button {
     position: relative;
     width: 64px;
     height: 64px;
-  }
-  .lds-grid div {
+}
+
+.lds-grid div {
     position: absolute;
     width: 13px;
     height: 13px;
     border-radius: 50%;
     background: #fff;
     animation: lds-grid 1.2s linear infinite;
-  }
-  .lds-grid div:nth-child(1) {
+}
+
+.lds-grid div:nth-child(1) {
     top: 6px;
     left: 6px;
     animation-delay: 0s;
-  }
-  .lds-grid div:nth-child(2) {
+}
+
+.lds-grid div:nth-child(2) {
     top: 6px;
     left: 26px;
     animation-delay: -0.4s;
-  }
-  .lds-grid div:nth-child(3) {
+}
+
+.lds-grid div:nth-child(3) {
     top: 6px;
     left: 45px;
     animation-delay: -0.8s;
-  }
-  .lds-grid div:nth-child(4) {
+}
+
+.lds-grid div:nth-child(4) {
     top: 26px;
     left: 6px;
     animation-delay: -0.4s;
-  }
-  .lds-grid div:nth-child(5) {
+}
+
+.lds-grid div:nth-child(5) {
     top: 26px;
     left: 26px;
     animation-delay: -0.8s;
-  }
-  .lds-grid div:nth-child(6) {
+}
+
+.lds-grid div:nth-child(6) {
     top: 26px;
     left: 45px;
     animation-delay: -1.2s;
-  }
-  .lds-grid div:nth-child(7) {
+}
+
+.lds-grid div:nth-child(7) {
     top: 45px;
     left: 6px;
     animation-delay: -0.8s;
-  }
-  .lds-grid div:nth-child(8) {
+}
+
+.lds-grid div:nth-child(8) {
     top: 45px;
     left: 26px;
     animation-delay: -1.2s;
-  }
-  .lds-grid div:nth-child(9) {
+}
+
+.lds-grid div:nth-child(9) {
     top: 45px;
     left: 45px;
     animation-delay: -1.6s;
-  }
-  @keyframes lds-grid {
-    0%, 100% {
-      opacity: 1;
+}
+
+@keyframes lds-grid {
+
+    0%,
+    100% {
+        opacity: 1;
     }
+
     50% {
-      opacity: 0.5;
+        opacity: 0.5;
     }
-  }
+}
 
 
-  
-.search-game{
+
+.search-game {
     display: none;
 }
 
@@ -397,9 +423,9 @@ button {
     padding: 6px;
     font-size: 17px;
     border: none;
-  }
+}
 
-  .search-game button {
+.search-game button {
     padding: 6px 10px;
     background: #ddd;
     font-size: 17px;
@@ -407,17 +433,16 @@ button {
     color: white;
     background-color: orangered;
     border: 1px solid white;
-  }
+}
 
-  .search-game button:hover {
+.search-game button:hover {
     background-color: red;
-  }
+}
 
-  .info-current-game{
+.info-current-game {
     color: white;
     background-color: orangered;
     text-align: right;
     padding-right: 10px;
     padding-top: 20px;
-  }
-  
+}
