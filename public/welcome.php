@@ -84,7 +84,7 @@ include '../config.php';
   <div class="container ">
     <div class="row full-height">
       <div class="col-sm-9 col-12 border border-light border-1 pt-sm-2 pt-1 pb-sm-2 pb-1">
-        <embed class="w-100 h-100 embed" type="text/html" src="<?php if (isset($_GET['game'])) {
+        <embed class="w-100 h-100" type="text/html" src="<?php if (isset($_GET['game'])) {
                                                             echo "../games/" . $game;
                                                           } ?>">
       </div>
