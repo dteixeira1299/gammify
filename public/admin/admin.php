@@ -96,33 +96,10 @@ function http_digest_parse($txt)
   <div class="container-fluid admin">
     <div class="row">
       <div class="col-sm-12 col-12">
-        <h3>Active Players:</h3>
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Players:</th>
-              <th>Last Login:</th>
-              <th>Created at:</th>
-              <th>Updated at:</th>
-            </tr>
-          </thead>
-          <tbody id="table-users">
-          </tbody>
-        </table>
 
-        <h3>Deleted Players:</h3>
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Players:</th>
-              <th>Last Login:</th>
-              <th>Created at:</th>
-              <th>Updated at:</th>
-            </tr>
-          </thead>
-          <tbody id="table-non-users">
-          </tbody>
-        </table>
+        <div id="table-users"></div>
+
+        <div id="table-non-users"></div>
 
       </div>
     </div>
@@ -141,7 +118,45 @@ function http_digest_parse($txt)
           var myArr = JSON.parse(this.responseText);
           var i;
           if (myArr.length != 0) {
+            var h3 = document.createElement("h3")
+            h3.innerHTML = "Active Users:"
+
+            e.appendChild(h3)
+
+            var table = document.createElement("table")
+            table.className = "table"
+
+            var thead = document.createElement("thead")
+
+            var tr = document.createElement("tr");
+
+            var thPlayers = document.createElement("th");
+            thPlayers.innerHTML = "Players:"
+            tr.appendChild(thPlayers)
+
+            var thLastLogin = document.createElement("th");
+            thLastLogin.innerHTML = "Last Login:"
+            tr.appendChild(thLastLogin)
+
+            var thCreatedAt = document.createElement("th");
+            thCreatedAt.innerHTML = "Created at:"
+            tr.appendChild(thCreatedAt)
+
+            var thUpdatedAt = document.createElement("th");
+            thUpdatedAt.innerHTML = "Updated at:"
+            tr.appendChild(thUpdatedAt)
+
+            var thActions = document.createElement("th");
+            tr.appendChild(thActions)
+
+            thead.appendChild(tr)
+            table.appendChild(thead)
+
+            var tbody = document.createElement("tbody")
+
             for (i = 0; i < myArr.length; i++) {
+
+
               var tr = document.createElement("tr");
               var td = document.createElement("td");
               var avatar = document.createElement("div");
@@ -150,7 +165,7 @@ function http_digest_parse($txt)
               avatar.style.border = "3px rgb(48, 69, 96) solid"
               avatar.style.borderRadius = "20px"
               avatar.style.position = "relative"
-              avatar.style.backgroundImage = myArr[i].avatar == "" || myArr[i].avatar == null ? "url(../assets/images/default_avatar.png)" : "url(../../users/" + myArr[i].username + "/avatar/" + myArr[i].avatar + ')'
+              avatar.style.backgroundImage = myArr[i].avatar == "" || myArr[i].avatar == null ? "url(../assets/images/default_avatar.png)" : "url(../../users/" + myArr[i].username + "/avatar/" + myArr[i].avatar + ")"
               avatar.style.backgroundSize = "cover"
               avatar.style.backgroundPosition = "center"
 
@@ -179,15 +194,33 @@ function http_digest_parse($txt)
               td4.appendChild(updated_at)
               tr.appendChild(td4)
 
-              e.appendChild(tr);
+              var td5 = document.createElement("td")
+              td5.className="text-end"
+
+              var btnRemoveAvatar = document.createElement("a")
+              btnRemoveAvatar.className = "btn btn-primary btn-sm ms-1"
+              btnRemoveAvatar.addEventListener("click", removeAvatar.bind(this, myArr[i].id));
+              var btnRemoveAvatarIcon = document.createElement("i")
+              btnRemoveAvatarIcon.className = "fa-solid fa-user"
+              btnRemoveAvatar.appendChild(btnRemoveAvatarIcon)
+              td5.appendChild(btnRemoveAvatar)
+
+              var btnDisableUser = document.createElement("a")
+              btnDisableUser.className = "btn btn-primary btn-sm"
+              btnDisableUser.addEventListener("click", disableUser.bind(this, myArr[i].id));
+              var btnDisableUserIcon = document.createElement("i")
+              btnDisableUserIcon.className = "fa-solid fa-lock"
+              btnDisableUser.appendChild(btnDisableUserIcon)
+              td5.appendChild(btnDisableUser)
+
+              tr.appendChild(td5)
+
+              tbody.appendChild(tr)
+              table.appendChild(tbody);
+
+              e.appendChild(table)
 
             }
-          } else {
-            var tr = document.createElement("tr");
-            var td = document.createElement("td");
-            td.innerHTML = 'No users!';
-            tr.appendChild(td);
-            e.appendChild(tr);
           }
         }
       };
@@ -214,7 +247,44 @@ function http_digest_parse($txt)
           var myArr = JSON.parse(this.responseText);
           var i;
           if (myArr.length != 0) {
+            var h3 = document.createElement("h3")
+            h3.innerHTML = "Deleted Users:"
+
+            e.appendChild(h3)
+
+            var table = document.createElement("table")
+            table.className = "table"
+
+            var thead = document.createElement("thead")
+
+            var tr = document.createElement("tr");
+
+            var thPlayers = document.createElement("th");
+            thPlayers.innerHTML = "Players:"
+            tr.appendChild(thPlayers)
+
+            var thLastLogin = document.createElement("th");
+            thLastLogin.innerHTML = "Last Login:"
+            tr.appendChild(thLastLogin)
+
+            var thCreatedAt = document.createElement("th");
+            thCreatedAt.innerHTML = "Created at:"
+            tr.appendChild(thCreatedAt)
+
+            var thUpdatedAt = document.createElement("th");
+            thUpdatedAt.innerHTML = "Updated at:"
+            tr.appendChild(thUpdatedAt)
+
+            var thActions = document.createElement("th");
+            tr.appendChild(thActions)
+
+            thead.appendChild(tr)
+            table.appendChild(thead)
+
+            var tbody = document.createElement("tbody")
+
             for (i = 0; i < myArr.length; i++) {
+
               var tr = document.createElement("tr");
               var td = document.createElement("td");
               var avatar = document.createElement("div");
@@ -252,14 +322,24 @@ function http_digest_parse($txt)
               td4.appendChild(updated_at)
               tr.appendChild(td4)
 
-              e.appendChild(tr);
+              var td5 = document.createElement("td")
+              td5.className="text-end"
+              var btnEnableUser = document.createElement("a")
+              btnEnableUser.className = "btn btn-primary btn-sm"
+              btnEnableUser.addEventListener("click", enableUser.bind(this, myArr[i].id));
+              var btnEnableUserIcon = document.createElement("i")
+              btnEnableUserIcon.className = "fa-solid fa-unlock"
+              btnEnableUser.appendChild(btnEnableUserIcon)
+              td5.appendChild(btnEnableUser)
+
+              tr.appendChild(td5)
+
+              tbody.appendChild(tr)
+              table.appendChild(tbody);
+
+              e.appendChild(table)
 
             }
-          } else {
-            var span = document.createElement("span");
-            span.style.textAlign="center"
-            span.innerHTML = 'No players are deleted!';
-            e.appendChild(span);
           }
         }
       };
@@ -272,6 +352,30 @@ function http_digest_parse($txt)
 
 
     getNonUsers();
+
+    function enableUser(user) {
+      const xmlhttp = new XMLHttpRequest();
+      xmlhttp.open("GET", "../../enable_user.php?user=" + user);
+      xmlhttp.send();
+      getUsers()
+      getNonUsers()
+    }
+
+    function disableUser(user){
+      const xmlhttp = new XMLHttpRequest();
+      xmlhttp.open("GET", "../../disable_user.php?user=" + user);
+      xmlhttp.send();
+      getUsers()
+      getNonUsers()
+    }
+
+    function removeAvatar(user){
+      const xmlhttp = new XMLHttpRequest();
+      xmlhttp.open("GET", "../../remove_avatar_user.php?user=" + user);
+      xmlhttp.send();
+      getUsers()
+      getNonUsers()
+    }
   </script>
 
   <script src="../assets/js/bootstrap.bundle.min.js"></script>

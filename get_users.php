@@ -7,7 +7,7 @@ session_start();
 
 $users = [];
 
-$sql = "SELECT id,username, last_login, created_at, updated_at, deleted_at FROM users WHERE deleted_at IS NULL";
+$sql = "SELECT id,username, last_login, created_at, updated_at, deleted_at, avatar FROM users WHERE deleted_at IS NULL";
 $result = $db_connect->query($sql);
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
