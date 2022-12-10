@@ -11,8 +11,7 @@ $game_key = $_GET["game_key"];
 $game = [];
 
 $sql = "SELECT move_currentPlayer, move_element_id FROM ticktacktoe " .
-"WHERE game_key='$game_key' ". 
-"AND ticktacktoe.deleted_at IS NULL";
+"WHERE game_key='$game_key'";
 
 $result = $db_connect->query($sql);
 if ($result->num_rows > 0) {

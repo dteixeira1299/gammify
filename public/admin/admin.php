@@ -101,6 +101,8 @@ function http_digest_parse($txt)
 
         <div id="table-non-users"></div>
 
+        <div id="table-google-users"></div>
+
       </div>
     </div>
   </div>
@@ -353,12 +355,133 @@ function http_digest_parse($txt)
 
     getNonUsers();
 
+    function getGoogleUsers() {
+      var e = document.getElementById("table-google-users");
+      e.innerHTML = "";
+
+      var xmlhttp = new XMLHttpRequest();
+      var url = "../../get_google_users.php";
+
+      xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          var myArr = JSON.parse(this.responseText);
+          var i;
+          if (myArr.length != 0) {
+            var h3 = document.createElement("h3")
+            h3.innerHTML = "Google Users:"
+
+            e.appendChild(h3)
+
+            var table = document.createElement("table")
+            table.className = "table"
+
+            var thead = document.createElement("thead")
+
+            var tr = document.createElement("tr");
+
+            var thPlayers = document.createElement("th");
+            thPlayers.innerHTML = "Players:"
+            tr.appendChild(thPlayers)
+
+            var thLastLogin = document.createElement("th");
+            thLastLogin.innerHTML = "Last Login:"
+            tr.appendChild(thLastLogin)
+
+            var thCreatedAt = document.createElement("th");
+            thCreatedAt.innerHTML = "Created at:"
+            tr.appendChild(thCreatedAt)
+
+            var thUpdatedAt = document.createElement("th");
+            thUpdatedAt.innerHTML = "Updated at:"
+            tr.appendChild(thUpdatedAt)
+
+            var thActions = document.createElement("th");
+            tr.appendChild(thActions)
+
+            thead.appendChild(tr)
+            table.appendChild(thead)
+
+            var tbody = document.createElement("tbody")
+
+            for (i = 0; i < myArr.length; i++) {
+
+
+              var tr = document.createElement("tr");
+              var td = document.createElement("td");
+              var avatar = document.createElement("div");
+              avatar.style.width = "40px"
+              avatar.style.height = "40px"
+              avatar.style.border = "3px rgb(48, 69, 96) solid"
+              avatar.style.borderRadius = "20px"
+              avatar.style.position = "relative"
+              avatar.style.backgroundImage = myArr[i].avatar == "" || myArr[i].avatar == null ? "url(../assets/images/default_avatar.png)" : "url(../../users/" + myArr[i].username + "/avatar/" + myArr[i].avatar + ")"
+              avatar.style.backgroundSize = "cover"
+              avatar.style.backgroundPosition = "center"
+
+              var name = document.createElement("span");
+              name.innerHTML = myArr[i].username;
+              name.className = "ms-5"
+              avatar.appendChild(name)
+              td.appendChild(avatar)
+              tr.appendChild(td)
+
+              var td2 = document.createElement("td");
+              var last_login = document.createElement("span");
+              last_login.innerHTML = myArr[i].last_login;
+              td2.appendChild(last_login)
+              tr.appendChild(td2)
+
+              var td3 = document.createElement("td");
+              var created_at = document.createElement("span");
+              created_at.innerHTML = myArr[i].created_at;
+              td3.appendChild(created_at)
+              tr.appendChild(td3)
+
+              var td4 = document.createElement("td");
+              var updated_at = document.createElement("span");
+              updated_at.innerHTML = myArr[i].updated_at;
+              td4.appendChild(updated_at)
+              tr.appendChild(td4)
+
+              var td5 = document.createElement("td")
+              td5.className="text-end"
+
+              var btnRemoveAvatar = document.createElement("a")
+              btnRemoveAvatar.className = "btn btn-primary btn-sm ms-1"
+              btnRemoveAvatar.addEventListener("click", removeAvatar.bind(this, myArr[i].id));
+              var btnRemoveAvatarIcon = document.createElement("i")
+              btnRemoveAvatarIcon.className = "fa-solid fa-user"
+              btnRemoveAvatar.appendChild(btnRemoveAvatarIcon)
+              td5.appendChild(btnRemoveAvatar)
+
+              tr.appendChild(td5)
+
+              tbody.appendChild(tr)
+              table.appendChild(tbody);
+
+              e.appendChild(table)
+
+            }
+          }
+        }
+      };
+
+      xmlhttp.open("GET", url, true);
+      xmlhttp.send();
+
+      setTimeout(getGoogleUsers, 10000);
+    }
+
+
+    getGoogleUsers();
+
     function enableUser(user) {
       const xmlhttp = new XMLHttpRequest();
       xmlhttp.open("GET", "../../enable_user.php?user=" + user);
       xmlhttp.send();
       getUsers()
       getNonUsers()
+      getGoogleUsers()
     }
 
     function disableUser(user){
@@ -367,6 +490,7 @@ function http_digest_parse($txt)
       xmlhttp.send();
       getUsers()
       getNonUsers()
+      getGoogleUsers()
     }
 
     function removeAvatar(user){
@@ -375,6 +499,7 @@ function http_digest_parse($txt)
       xmlhttp.send();
       getUsers()
       getNonUsers()
+      getGoogleUsers()
     }
   </script>
 

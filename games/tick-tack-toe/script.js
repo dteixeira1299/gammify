@@ -72,12 +72,12 @@ function exitGame(x) {
     xmlhttp.open("GET", url);
     xmlhttp.send();
 
-    location.reload();
+    // location.reload();
 
-    if (notif_room_closed === false) {
-        alert("Players not connected. Room is closed. See you soon in another room. :)")
-        notif_room_closed = true
-    }
+    // if (notif_room_closed === false) {
+    //     alert("Players not connected. Room is closed. See you soon in another room. :)")
+    //     notif_room_closed = true
+    // }
 
 }
 
@@ -196,7 +196,7 @@ function check_active_players() {
     xmlhttp.open("GET", url, true);
     xmlhttp.send();
 
-    setTimeout(check_active_players, 10000)
+    setTimeout(check_active_players, 25000)
 }
 
 function check_block_player() {
@@ -358,7 +358,7 @@ function get_move_player() {
     }
 
     if (sessionStorage.getItem("GAME_KEY")) {
-        setTimeout(get_move_player, 5000);
+        setTimeout(get_move_player, 2000);
     }
 }
 
